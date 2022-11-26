@@ -24,4 +24,4 @@ Fivem - ESX &amp; QBCORE Multicharacters
 # compatibilites
 - this supports qb-spawn ( you need to disable spawnselector in config ) - by default qbcore is setup this way. so you can have your spawn in aparment, housing etc.. (temporary until i release my housing with apartments)
 - esx_kashacters identifier logic - this dont support the old multicharacter logic. its only support if your esx legacy is using char as prefix for multicharacters
-- skinchanger this supports the skinchanger with multipeds export ( latest repo should be ok)
+- Skins - this supports the skinchanger with multipeds export ( latest repo should be ok)
