@@ -27,9 +27,6 @@ Citizen.CreateThread(function ()
           if NetworkIsSessionActive() or NetworkIsPlayerActive(PlayerId()) then
 			if xSound then
 				Citizen.CreateThreadNow(function ()
-					if xSound:soundExists('chosen') then
-						xSound:Destroy('chosen')
-					end
 					xSound:PlayUrl('intro', 'https://www.youtube.com/watch?v=41cqwo504hA', 0.5, false, options)
 				end)
 			end
@@ -205,9 +202,6 @@ ShowCharacter = function(slot)
 		if xSound:soundExists('intro') then
 			xSound:Destroy('intro')
 		end
-		if not xSound:soundExists('chosen') then
-			xSound:PlayUrl('chosen', 'https://www.youtube.com/watch?v=TjF_V_feppI', 0.09, false, options)
-		end
 	end
 	if chardata and not chardata.new then
 		SendNUIMessage({showoptions = 'existing', slot = slot})
@@ -259,9 +253,6 @@ SetupPlayer = function()
 	FreezeEntityPosition(PlayerPedId(), true)
 	while not HasCollisionLoadedAroundEntity(PlayerPedId()) do Wait(1) end
 	FreezeEntityPosition(PlayerPedId(), false)
-	if xSound and xSound:soundExists('chosen') then
-		xSound:Destroy('chosen')
-	end
 end
 
 ChooseCharacter = function(slot)
