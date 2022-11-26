@@ -1,0 +1,204 @@
+
+
+ async function SendData(data,cb) {
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == XMLHttpRequest.DONE) {
+            if (cb) {
+                cb(xhr.responseText)
+            }
+        }
+    }
+    xhr.open("POST", 'https://renzu_multicharacter/nuicb', true)
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify(data))
+}
+
+let getEl = function( id ) { return document.getElementById( id )}
+let chosenslot = 1
+let characters = {}
+
+const toDataURL = url => fetch(url)
+  .then(response => response.blob())
+  .then(blob => new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onloadend = () => resolve(reader.result)
+    reader.onerror = reject
+    reader.readAsDataURL(blob)
+}))
+
+let pedshots = {}
+window.addEventListener('message', function (table) {
+    let event = table.data;
+    if (event.fade) {
+        getEl('body').style.display = 'block'
+        getEl('body').style.background = 'rgba(0, 0, 0, 1.0)'
+    } else if (event.fade == false) {
+        getEl('body').style.background = 'rgba(0, 0, 0, 0.0)'
+    }
+    if (event.pedshots) {
+        if (event.default) {
+            pedshots[event.slot] = '/web/ped.jpg'
+        } else if (pedshots[event.slot] !== undefined || pedshots[event.slot] !== '/web/ped.jpg') {
+            toDataURL(`https://nui-img/${event.pedshots}/${event.pedshots}?${Date.now()}`)
+            .then(dataUrl => {
+                pedshots[event.slot] = dataUrl
+            })
+        }
+    }
+    if (event.showui) {
+        getEl('characters').innerHTML = ''
+        getEl('body').style.display = 'block'
+        getEl('multi').style.display = 'none'
+        getEl('logocontainer').style.display = 'none'
+        getEl('charinfo').style.display = 'none'
+        getEl('option').style.display = 'none'
+        getEl('logocontainer').style.width = '100%'
+        getEl('logocontainer').style.right = 'auto'
+        getEl('register').style.display = 'none'
+    }
+    if (event.show == true) {
+        getEl('multi').style.display = 'grid'
+    } else if (event.show == false) {
+        getEl('multi').style.display = 'none'
+    }
+
+    if (event.showlogo == true) {   
+        getEl('logocontainer').style.top = '20%'
+        getEl('logocontainer').style.display = 'inline-block'
+    } else if (event.showlogo == false) {
+        getEl('logocontainer').style.display = 'inline-block'
+        getEl('logocontainer').style.width = '50%'
+        getEl('logocontainer').style.right = '5%'
+        getEl('logocontainer').style.top = '35%'
+    }
+    if (event.characters) {  
+        let chars = event.characters
+        characters = chars
+        for (var i = 0; i < 5; i++) {
+            if (!chars[i]) {
+                chars[i] = 'EMPTY SLOT'
+            }
+        }
+        for (const i in chars) {
+            let index = i
+            let ui = `<div class="char__card" onclick="showchar('${index}')">
+            <div class="char__data">
+                <img src="${pedshots[index]}" alt="" class="char__img" onerror="this.src='/web/ped.jpg';">
+                <div>
+                <h1 class="char__name">${chars[index].name ? chars[index].name : 'Empty Slot'}</h1>
+                <span class="char__profession">${chars[index].job ? chars[index].job : ''}</span>
+                </div>
+            </div>
+
+            <div>
+                <a href="#" class="char__social"><i class='bx bxl-instagram'></i></a>
+                <a href="#" class="char__social"><i class='bx bxl-linkedin'></i></a>
+                <a href="#" class="char__social"><i class='bx bxl-twitter'></i></a>
+            </div>
+            </div>`
+            getEl('characters').insertAdjacentHTML("beforeend", ui)
+        }
+    }
+    if (event.showoptions == 'existing') {
+        getEl('login').innerHTML = 'Choose'
+        getEl('delete').style.display = 'inline-block'
+        getEl('register').style.display = 'none'
+        getEl('charinfo').style.display = 'unset'
+        getEl('logocontainer').style.display = 'none'
+        getEl('option').style.display = 'inline-block'
+
+        chosenslot = event.slot
+        ShowInfos()
+    } else if (event.showoptions == 'new') {
+        chosenslot = event.slot
+        getEl('login').innerHTML = 'Create'
+        getEl('register').style.display = 'flex'
+        getEl('delete').style.display = 'none'
+        getEl('charinfo').style.display = 'none'
+        getEl('logocontainer').style.display = 'none'
+        getEl('option').style.display = 'none'
+    }
+})
+
+function ShowInfos() {
+    getEl('infos').innerHTML = ''
+    let id = chosenslot-1
+    let infos = {}
+    for (const i in characters[id]) {
+        let data = characters[id][i]
+        if (i == 'name') {
+            infos[0] = {label : '<i class="fas fa-id-card"></i> Name', data : data}
+        }
+        if (i == 'job') {
+            infos[1] = {label : '<i class="fas fa-briefcase"></i> Job', data : data}
+        }
+        if (i == 'grade') {
+            infos[2] = {label : '<i class="fas fa-level-up-alt"></i> Grade', data : data}
+        }
+        if (i == 'sex') {
+            infos[3] = {label : '<i class="fas fa-venus-mars"></i> Sex', data : data}
+        }
+        if (i == 'money') {
+            infos[4] = {label : '<i class="fas fa-wallet"></i> Money', data : numberWithCommas(data)}
+        }
+        if (i == 'bank') {
+            infos[5] = {label : '<i class="fas fa-piggy-bank"></i> Bank', data : numberWithCommas(data)}
+        }
+        if (i == 'dateofbirth') {
+            infos[6] = {label : '<i class="fas fa-calendar-week"></i> Date of Birth', data : data}
+        }
+    }
+    for (const i in infos) {
+        let ui = `<div style="justify-content: space-between!important;border-bottom: 1px solid #dee2e6!important;padding-bottom: 0.5rem!important;margin-top: 1rem!important;align-items: center!important;display: flex!important;width: 300px;">
+                <h1 class="char__name">${infos[i].label}</h1>
+                <span class="char__profession">${infos[i].data}</span>
+            </div>`
+        getEl('infos').insertAdjacentHTML("beforeend", ui)
+    }    
+}
+
+function chooseslot() {
+    getEl('body').style.display = 'none'
+    return SendData({msg: 'chooseslot', slot : chosenslot})
+}
+
+function confirm(show) {
+    if (show) {
+        getEl('confirm').style.display = 'block'
+    } else {
+        getEl('confirm').style.display = 'none'
+    }
+}
+
+function deletechar() {
+    getEl('confirm').style.display = 'none'
+    return SendData({msg: 'deletechar', slot : chosenslot})
+}
+
+function showchar(slot) {
+    slot = +slot + 1
+    chosenslot = slot
+    return SendData({msg: 'showchar', slot : chosenslot})
+}
+
+function register() {
+    let myForm = getEl('registerf')
+    let formData = new FormData(myForm);
+    let gag = Object.fromEntries(formData)
+    for (const i in gag) {
+        if (i == 'amount') {
+            amount = gag[i]
+        }
+    }
+    getEl('body').style.display = 'none'
+    return SendData({msg: 'create', info : gag, slot: chosenslot})
+}
+
+function sex(str) {
+    return SendData({msg: 'sex', sex : str, slot: chosenslot})
+}
+
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
