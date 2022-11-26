@@ -384,6 +384,10 @@ RegisterNetEvent('esx:playerLoaded', function(playerData, isNew, skin)
 	if isNew or not skin or #skin == 1 then
 		Cleanups()
 		SpawnSelect(vec4(defaultspawn.x,defaultspawn.y+10,defaultspawn.z,0.0))
+		if Config.SpawnSelector and characters[chosenslot] then -- update ped position from selector
+			local coord = GetEntityCoords(PlayerPedId())
+			characters[chosenslot].position = {x = coord.x, y = coord.y, z = coord.z, heading = GetEntityHeading(PlayerPedId())}
+		end
 		finished = false
 
 		local model = GetModel(playerData.sex)
@@ -425,6 +429,7 @@ end)
 RegisterCommand('relog', function(source, args, rawCommand)
 	if Config.Relog and not LocalPlayer.state.isdead then
 		TriggerServerEvent('esx_multicharacter:relog')
+		SetEntityVisible(PlayerPedId(),false)
 	end
 end)
 
