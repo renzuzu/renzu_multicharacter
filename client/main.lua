@@ -119,11 +119,9 @@ IntroCam = function()
 	chosen = false
 	loaded = false
 	SendNUIMessage({fade = true})
-	Wait(100)
+	SendNUIMessage({showui = true})
 	characters = callback('getcharacters')
 	DoScreenFadeIn(1000)
-	Wait(1000)
-	SendNUIMessage({showui = true})
 	CreatePedHeadShots(characters)
 	WeatherTransition()
 	SetEntityCoords(PlayerPedId(), 0.0,0.0,777.0)
