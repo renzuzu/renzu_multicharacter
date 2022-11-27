@@ -311,7 +311,7 @@ end
 
 GetModel = function(str)
 	if Config.skinchanger then
-		skin = Config.Default[str]
+		skin = Config.Default[str or 'm']
 		skin.sex = str == "m" and 0 or 1
 		local model = skin.sex == 0 and `mp_m_freemode_01` or `mp_f_freemode_01`
 		return model
