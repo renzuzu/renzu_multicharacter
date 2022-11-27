@@ -412,7 +412,6 @@ RegisterNetEvent('esx:playerLoaded', function(playerData, isNew, skin)
 	TriggerEvent('playerSpawned')
 	TriggerEvent('esx:restoreLoadout')
 	SetupPlayer()
-	characters, hidePlayers = {}, false
 end)
 
 RegisterNetEvent('esx:onPlayerLogout', function()
@@ -445,6 +444,7 @@ RegisterNUICallback('nuicb', function(data)
 		SpawnSelect(vec4(characters[chosenslot].position.x,characters[chosenslot].position.y,characters[chosenslot].position.z,characters[chosenslot].position.heading or 0.0))
 	end
 	if data.msg == 'create' then
+		if not data.info.sex then data.info.sex = 'm' end
 		data.info.height = 100 -- is this really needed
 		chosenslot = data.slot
 		callback('renzu_multicharacter:createcharacter', {info = data.info, slot = data.slot})
@@ -464,9 +464,9 @@ RegisterNUICallback('nuicb', function(data)
 	end
 	if data.msg == 'deletechar' then
 		if Config.framework == 'QBCORE' then data.slot = characters[chosenslot].citizenid end
-		callback('renzu_multicharacter:deletecharacter', data.slot)	
-		CharacterSelect()
+		callback('renzu_multicharacter:deletecharacter', data.slot)
 		characters[chosenslot] = nil
+		CharacterSelect()
 		pedshots[chosenslot] = nil
 	end
 	if data.msg == 'sex' then
