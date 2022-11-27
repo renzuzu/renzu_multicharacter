@@ -25,6 +25,9 @@ body {
 header {
   display: grid;
   color:#fff;
+  position: absolute;
+  top: 7%;
+  left: 3%;
   align-items: center;
 }
 
@@ -55,14 +58,21 @@ img {
   border-radius: 1rem;
 }
 .char__list {
+  padding: 10px 20px 10px 10px;
+  direction: rtl;
   display: grid;
   row-gap: 1rem;
+  height: 74vh;
+  position: absolute;
+  top: 10%;
+  overflow-x: hidden;
 }
 .char__card, .char__data {
   display: flex;
   align-items: center;
 }
 .char__card {
+  direction:ltr;
   width: 360px;
   justify-content: space-between;
   padding: 0.75rem 1.25rem 0.75rem 0.75rem;
@@ -91,12 +101,12 @@ img {
   font-size: var(--smaller-font-size);
   color: #818ea3;
 }
-.char__social {
+.char__extras {
   margin: 0 0.375rem;
   color: var(--first-color-light);
   transition: 0.4s;
 }
-.char__social:hover {
+.char__extras:hover {
   color: var(--first-color);
 }
 
@@ -337,7 +347,13 @@ input[type=radio] {
   top:20%;
 }
 
+#playerinfo {
+  width: 15vw;
+  overflow: hidden;
+}
+
 #option {
+  top: 20vh;
   position: relative;
   display: none;
   text-align: center;
@@ -373,3 +389,22 @@ input[type=radio] {
   bottom: 5%;
   left: 2%;
 }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #2f3032 #19191f;
+  }
+
+  *::-webkit-scrollbar {
+    width: 11px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: #19191f00;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: #2f3032;
+    border-radius: 10px;
+    border: 3px double #a7acaf;
+  }

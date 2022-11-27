@@ -79,26 +79,26 @@ window.addEventListener('message', function (table) {
     if (event.characters) {  
         let chars = event.characters
         characters = chars
-        for (var i = 0; i < 5; i++) {
+        for (var i = 0; i < event.slots; i++) {
             if (!chars[i]) {
                 chars[i] = 'EMPTY SLOT'
             }
         }
         for (const i in chars) {
             let index = i
-            let ui = `<div class="char__card" onclick="showchar('${index}')">
-            <div class="char__data">
+            let ui = `<div class="char__card">
+            <div class="char__data"  onclick="showchar('${index}')">
                 <img src="${pedshots[index]}" alt="" class="char__img" onerror="this.src='/web/ped.jpg';">
-                <div>
+                <div id="playerinfo">
                 <h1 class="char__name">${chars[index].name ? chars[index].name : 'Empty Slot'}</h1>
                 <span class="char__profession">${chars[index].job ? chars[index].job : ''}</span>
                 </div>
             </div>
 
-            <div>
-                <a href="#" class="char__social"><i class='bx bxl-instagram'></i></a>
-                <a href="#" class="char__social"><i class='bx bxl-linkedin'></i></a>
-                <a href="#" class="char__social"><i class='bx bxl-twitter'></i></a>
+            <div style="z-index:99;display:none;">
+                <a onclick="return extras('premium')" href="#" class="char__extras"><i class="fas fa-star" aria-hidden="true"></i></a>
+                <a onclick="return extras('vehicles')" href="#" class="char__extras"><i class="fas fa-car" aria-hidden="true"></i></a>
+                <a onclick="return extras('items')" href="#" class="char__extras"><i class="fas fa-archive"></i></a>
             </div>
             </div>`
             getEl('characters').insertAdjacentHTML("beforeend", ui)

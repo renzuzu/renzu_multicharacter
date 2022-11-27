@@ -17,10 +17,11 @@ function GetPlayerFromId(src)
 	end
 end
 
-GetCharacters = function(source,data)
+GetCharacters = function(source,data,slots)
 	local characters = {}
 	if Config.framework == 'ESX' then
-		local id = Config.Prefix..'%:'..ESX.GetIdentifier(source)
+		local license = ESX.GetIdentifier(source)
+		local id = Config.Prefix..'%:'..license
 		local data = MySQL.query.await('SELECT * FROM users WHERE identifier LIKE ?', {'%'..id..'%'})
 		for k,v in pairs(data) do
 			local job, grade = v.job or 'unemployed', tostring(v.job_grade)
@@ -47,7 +48,7 @@ GetCharacters = function(source,data)
 				}
 			end
 		end
-		return characters
+		return {characters = characters , slots = slots}
 	else
 		local license = QBCore.Functions.GetIdentifier(source, 'license')
 		local plyChars = {}
@@ -71,7 +72,7 @@ GetCharacters = function(source,data)
 				position = result[i].position and json.decode(result[i].position) or vec3(280.03,-584.29,43.29),
 			}
 		end
-		return characters
+		return {characters = characters , slots = slots}
 	end
 end
 
@@ -182,3 +183,26 @@ function loadHouseData(src)
     TriggerClientEvent("qb-garages:client:houseGarageConfig", src, HouseGarages)
     TriggerClientEvent("qb-houses:client:setHouseConfig", src, Houses)
 end
+
+UpdateSlot = function(id,slot)
+	local slots = json.decode(GetResourceKvpString("char_slots") or '[]') or {}
+	local license = GetIdentifiers(id)
+	if license == nil then return end
+	slots[license] = tonumber(slot) or Config.Slots
+	SetResourceKvp('char_slots',json.encode(slots))
+	return true
+end
+
+Command = function(command)
+	if Config.framework == 'ESX' then
+		ESX.RegisterCommand(command, 'admin', function(xPlayer, args, showError)
+			UpdateSlot(xPlayer.source,args[1],args[2])
+		end, false)
+	else
+		QBCore.Commands.Add(command, 'Add Character Slots', {{name='id', help='slots'}, {name='slots', help='Number of Total Sloots, (1, 5 or 7 etc..)'}}, false, function(source, args)
+			UpdateSlot(source,args[1],args[2])
+		end, 'admin')
+	end
+end
+
+Command('updatecharslots')

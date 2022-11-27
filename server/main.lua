@@ -30,7 +30,9 @@ end)
 
 registercallback('getcharacters', function(source,data)
 	SetPlayerRoutingBucket(source,math.random(99,999))
-	return GetCharacters(source,data)
+	local slots = json.decode(GetResourceKvpString("char_slots") or '[]') or {}
+	local availableslots = slots[GetIdentifiers(source)] or Config.Slots
+	return GetCharacters(source,data,availableslots)
 end)
 
 RegisterNetEvent('esx_multicharacter:relog', function()
@@ -40,3 +42,16 @@ RegisterNetEvent('esx_multicharacter:relog', function()
 		QBCore.Player.Logout(src)
 	 end
 end)
+
+GetIdentifiers = function(id)
+	local license = nil
+	local numIdentifiers = GetNumPlayerIdentifiers(id)
+	for i = 0, numIdentifiers do
+		local identifier = GetPlayerIdentifier(id, i)
+        if string.find(GetPlayerIdentifier(id, i),'license') then
+			license = identifier
+			break
+		end
+    end
+	return license
+end

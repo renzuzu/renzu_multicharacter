@@ -5,6 +5,7 @@ local models = {
 }
 local defaultspawn = Config.Spawn
 local xSound = nil
+local slots = Config.Slots
 xsound = function()
 	o = function()
 		sound = exports.xSound
@@ -85,7 +86,7 @@ end
 local pedshots = {}
 
 CreatePedHeadShots = function(characters)
-	for i = 1, 5 do
+	for i = 1, slots do
 		local chardata = characters[i]
 		local slot = i-1
 		if chardata and not pedshots[slot] then
@@ -117,7 +118,9 @@ IntroCam = function()
 	loaded = false
 	SendNUIMessage({fade = true})
 	SendNUIMessage({showui = true})
-	characters = callback('getcharacters')
+	local data = callback('getcharacters')
+	slots = data.slots
+	characters = data.characters
 	DoScreenFadeIn(1000)
 	SetEntityCoords(PlayerPedId(), 0.0,0.0,777.0)
 	CreatePedHeadShots(characters)
@@ -132,7 +135,7 @@ IntroCam = function()
 	local camloc = Config.CameraIntro
 	SendNUIMessage({showlogo = true})
 	while #(GetFinalRenderedCamCoord() - vec3(1609.6380615234,-2272.8967285156,483.33)) > 10 do Wait(111) end
-	SendNUIMessage({characters = characters})
+	SendNUIMessage({characters = characters, slots = slots})
 	while not chosen do
 		for k,v in ipairs(camloc) do
 			if not chosen then
