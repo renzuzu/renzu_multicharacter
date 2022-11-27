@@ -14,6 +14,7 @@ Fivem - ESX &amp; QBCORE Multicharacters
 - Supports Spawn Selector (by default this uses my renzu_spawn as a Selector)
 - Supports Latest skinchanger & fivemappearance or qb-clothing
 - Supports /relog command (logout)
+- Supports Updating Slots number via config or commands. there is no maximum number but 10-20 is good.
 
 # Dependency
 - ESX or QBCORE
@@ -24,4 +25,4 @@ Fivem - ESX &amp; QBCORE Multicharacters
 # compatibilites
 - this supports qb-spawn ( you need to disable spawnselector in config ) - by default qbcore is setup this way. so you can have your spawn in aparment, housing etc.. (temporary until i release my housing with apartments)
 - esx_kashacters identifier logic - this dont support the old multicharacter logic. its only support if your esx legacy is using char as prefix for multicharacters
-- Skins - this supports the skinchanger with multipeds export ( latest repo should be ok)
+- Skins - this supports the skinchanger so this probably supports CUI characters too. since its a revamped skinchanger with creator ui.
