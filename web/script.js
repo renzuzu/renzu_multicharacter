@@ -39,10 +39,11 @@ window.addEventListener('message', function (table) {
     if (event.pedshots) {
         if (event.default) {
             pedshots[event.slot] = '/web/ped.jpg'
-        } else if (pedshots[event.slot] !== undefined || pedshots[event.slot] !== '/web/ped.jpg') {
+        } else if (pedshots[event.slot] == undefined || pedshots[event.slot] == '/web/ped.jpg') {
             toDataURL(`https://nui-img/${event.pedshots}/${event.pedshots}?${Date.now()}`)
             .then(dataUrl => {
                 pedshots[event.slot] = dataUrl
+                console.log(`https://nui-img/${event.pedshots}/${event.pedshots}?${Date.now()}`)
             })
         }
     }

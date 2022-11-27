@@ -92,20 +92,24 @@ CreatePedHeadShots = function(characters)
 			local skin = chardata.skin
 			skin.sex = chardata.sex == "m" and 0 or 1
 			local model = models[skin.sex] or models[0]
+			SetEntityCoords(PlayerPedId(), chardata.position.x,chardata.position.y-10,chardata.position.z-0.5)
 			RequestModel(model)
 			while not HasModelLoaded(model) do Wait(0) end
-			local ped = CreatePed(16,model, chardata.position.x,chardata.position.y,chardata.position.z-0.5,chardata.position.heading or 0.0,0,1)
+			local ped = CreatePed(4,model, chardata.position.x,chardata.position.y,chardata.position.z-0.5,chardata.position.heading or 0.0,0,1)
 			while not DoesEntityExist(ped) do Wait(1) end
+			SetEntityAsMissionEntity(ped)
 			SetFocusEntity(ped)
-			SetEntityCoords(PlayerPedId(), chardata.position.x,chardata.position.y-10,chardata.position.z-0.5)
 			SetSkin(ped, skin)
-			Wait(111)
+			Wait(211)
 			local pedshot , handle = GetPedShot(ped)
 			pedshots[slot] = pedshot
 			SendNUIMessage({pedshots = pedshot, slot = slot})
-			Wait(10)
-			ClearPedHeadshots(handle)
-			DeleteEntity(ped)
+			SetTimeout(1000,function()
+				local handle = handle
+				local ped = ped
+				ClearPedHeadshots(handle)
+				DeleteEntity(ped)
+			end)
 		else
 			SendNUIMessage({pedshots = 'default', slot = slot, default = true})
 		end
@@ -488,8 +492,8 @@ GetPedShot = function(ped)
 		timer = timer - 10
 	end
 	headshotTxd = GetPedheadshotTxdString(tempHandle)
-	if headshotTxd == nil or headshotTxd == 0 or tempHandle == 0 then
-		tempHandle = RegisterPedheadshot_3(PlayerPedId())
+	if headshotTxd == nil or headshotTxd == 0 or tempHandle == 0 or not IsPedheadshotValid(tempHandle) then
+		tempHandle = RegisterPedheadshot_3(ped)
 		timer = 1200
 		while not IsPedheadshotReady(tempHandle) and timer > 0 or not IsPedheadshotValid(tempHandle) and timer > 0 do
 			Wait(1)
