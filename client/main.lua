@@ -392,7 +392,7 @@ RegisterNetEvent('esx:playerLoaded', function(playerData, isNew, skin)
 		end
 		finished = false
 
-		local model = GetModel(playerData.sex)
+		local model = GetModel(playerData.sex or 'm')
 		RequestModel(model)
 		while not HasModelLoaded(model) do
 			RequestModel(model)
@@ -450,7 +450,7 @@ RegisterNUICallback('nuicb', function(data)
 		callback('renzu_multicharacter:createcharacter', {info = data.info, slot = data.slot})
 		Cleanups()
 		if Config.framework == 'QBCORE' and GetResourceState('qb-spawn') ~= 'started' then
-			local model = GetModel(data.info.sex)
+			local model = GetModel(data.info.sex or 'm')
 			RequestModel(model)
 			while not HasModelLoaded(model) do
 				RequestModel(model)
