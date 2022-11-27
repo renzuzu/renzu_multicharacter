@@ -19,19 +19,19 @@ xsound = function()
 end
 Citizen.CreateThread(function ()
 	DoScreenFadeOut(300)
-	Wait(1001)
-	SendNUIMessage({fade = true})
 	if Config.bgmusic and not pcall(xsound, res or false) then xSound = nil end
      while true do
           Wait(0)
           if NetworkIsSessionActive() or NetworkIsPlayerActive(PlayerId()) then
+			exports['spawnmanager']:setAutoSpawn(false)
+			Wait(1001)
+			SendNUIMessage({fade = true})
 			if xSound then
 				Citizen.CreateThreadNow(function ()
 					xSound:PlayUrl('intro', 'https://www.youtube.com/watch?v=41cqwo504hA', 0.5, false, options)
 				end)
 			end
 			CharacterSelect()
-			exports['spawnmanager']:setAutoSpawn(false)
 			break
           end
      end
@@ -92,23 +92,19 @@ CreatePedHeadShots = function(characters)
 			local skin = chardata.skin
 			skin.sex = chardata.sex == "m" and 0 or 1
 			local model = models[skin.sex] or models[0]
-			SetEntityCoords(PlayerPedId(), chardata.position.x,chardata.position.y-10,chardata.position.z-0.5)
+			--SetEntityCoords(PlayerPedId(), chardata.position.x,chardata.position.y-10,chardata.position.z-0.5)
 			RequestModel(model)
 			while not HasModelLoaded(model) do Wait(0) end
-			local ped = CreatePed(4,model, chardata.position.x,chardata.position.y,chardata.position.z-0.5,chardata.position.heading or 0.0,0,1)
-			while not DoesEntityExist(ped) do Wait(1) end
-			SetEntityAsMissionEntity(ped)
-			SetFocusEntity(ped)
-			SetSkin(ped, skin)
+			SetPlayerModel(PlayerId(), model)
+			SetFocusEntity(PlayerPedId())
+			SetSkin(PlayerPedId(), skin)
 			Wait(211)
-			local pedshot , handle = GetPedShot(ped)
+			local pedshot , handle = GetPedShot(PlayerPedId())
 			pedshots[slot] = pedshot
 			SendNUIMessage({pedshots = pedshot, slot = slot})
 			SetTimeout(1000,function()
 				local handle = handle
-				local ped = ped
 				ClearPedHeadshots(handle)
-				DeleteEntity(ped)
 			end)
 		else
 			SendNUIMessage({pedshots = 'default', slot = slot, default = true})
@@ -123,9 +119,9 @@ IntroCam = function()
 	SendNUIMessage({showui = true})
 	characters = callback('getcharacters')
 	DoScreenFadeIn(1000)
+	SetEntityCoords(PlayerPedId(), 0.0,0.0,777.0)
 	CreatePedHeadShots(characters)
 	WeatherTransition()
-	SetEntityCoords(PlayerPedId(), 0.0,0.0,777.0)
 	cam = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", 1609.6380615234,-2272.8967285156,483.33, 0.00, 0.00, -10.00, 100.00, false, 0)
 	Wait(3000)
 	DoScreenFadeIn(1000)
@@ -159,19 +155,17 @@ IntroCam = function()
 end
 
 local peds = {}
-local lastped = nil
 local chosenslot = 1
 
 CharacterSelect = function()
 	local ped = PlayerPedId()
 	DisplayRadar(0)
-	SetEntityCoords(ped, 0.0,0.0,1000.0)
+	--SetEntityCoords(ped, 0.0,0.0,1000.0)
 	TriggerEvent('esx:loadingScreenOff')
 	ShutdownLoadingScreen()
 	ShutdownLoadingScreenNui()
 	ShutdownLoadingScreenNui(true)
 	RequestCollisionAtCoord(0.0,0.0,777.0)
-	SetEntityVisible(ped, false)
 	FreezeEntityPosition(ped, true)
 	DoScreenFadeOut(300)
 	IntroCam()
@@ -199,7 +193,6 @@ end
 
 ShowCharacter = function(slot)
 	chosenslot = slot
-	if DoesEntityExist(lastped) then DeleteEntity(lastped) end
 	chosen = true
 	local chardata = characters[tonumber(slot)]
 	if xSound then
@@ -207,24 +200,29 @@ ShowCharacter = function(slot)
 			xSound:Destroy('intro')
 		end
 	end
+	SetEntityVisible(PlayerPedId(), 1, 0)
+	SetPedAoBlobRendering(PlayerPedId(), true)
+	ResetEntityAlpha(PlayerPedId())
 	if chardata and not chardata.new then
 		SendNUIMessage({showoptions = 'existing', slot = slot})
 	else
 		SendNUIMessage({showoptions = 'new', slot = slot})
-		if not DoesEntityExist(peds[slot]) then
-			RequestModel(models[0])
-			while not HasModelLoaded(models[0]) do Wait(100) end
-			peds[slot] = CreatePed(4,models[0], defaultspawn.x,defaultspawn.y,defaultspawn.z-0.9, 0.0,0,1)
-			while not DoesEntityExist(peds[slot]) do Wait(1) end
-			lastped = peds[slot]
+		local ped = PlayerPedId()
+		SetEntityCoords(ped,defaultspawn.x,defaultspawn.y,defaultspawn.z-0.9)
+		local model = GetModel('m')
+		RequestModel(model)
+		while not HasModelLoaded(model) do
+			RequestModel(model)
+			Wait(0)
 		end
-		SetSkin(peds[slot],Config.Default['m'])
+		SetPlayerModel(PlayerId(), model)
+		SetSkin(ped,Config.Default['m'])
 		characters[tonumber(slot)] = {position = {x = defaultspawn.x, y = defaultspawn.y+10, z = defaultspawn.z}, new = true}
-		SetBlockingOfNonTemporaryEvents(peds[slot], true)
-		TaskTurnPedToFaceCoord(peds[slot],defaultspawn.x,defaultspawn.y+10,defaultspawn.z)
+		SetBlockingOfNonTemporaryEvents(ped, true)
+		TaskTurnPedToFaceCoord(ped,defaultspawn.x,defaultspawn.y+10,defaultspawn.z)
 		SetCamParams(cam, defaultspawn.x,defaultspawn.y+10,defaultspawn.z, 0.0,0.0,0.0, 20.0, 1, 0, 0, 2)
 		PointCamAtCoord(cam,defaultspawn.x,defaultspawn.y,defaultspawn.z)
-		SetEntityCoords(PlayerPedId(),defaultspawn.x,defaultspawn.y+20,defaultspawn.z)
+		--SetEntityCoords(PlayerPedId(),defaultspawn.x,defaultspawn.y+20,defaultspawn.z)
 		SetFocusPosAndVel(defaultspawn.x,defaultspawn.y+10,defaultspawn.z)
 		return
 	end
@@ -232,21 +230,29 @@ ShowCharacter = function(slot)
 	if string.find(tostring(chardata.sex):lower(), 'mal') then chardata.sex ='m' elseif string.find(tostring(chardata.sex):lower(),'fem') then chardata.sex = 'f' end -- supports other identity logic
 	skin.sex = chardata.sex == "m" and 0 or 1
 	local model = models[skin.sex] or models[0]
-	if not DoesEntityExist(peds[slot]) then
-		RequestModel(model)
-		while not HasModelLoaded(model) do Wait(100) end
-		peds[slot] = CreatePed(16,model, chardata.position.x,chardata.position.y,chardata.position.z-0.9,chardata.position.heading or 0.0,0,1)
-		while not DoesEntityExist(peds[slot]) do Wait(1) end
-		lastped = peds[slot]
+	if not IsCamActive(cam) then
+		SetCamActive(cam,true)
 	end
-	
-	SetBlockingOfNonTemporaryEvents(peds[slot], true)
-	SetSkin(peds[slot], skin)
-	SetEntityCoords(PlayerPedId(),chardata.position.x,chardata.position.y+20,chardata.position.z+0.5)
-	SetFocusPosAndVel(chardata.position.x,chardata.position.y+10,chardata.position.z+0.5)
-	SetCamParams(cam, chardata.position.x,chardata.position.y+10,chardata.position.z+0.5, 0.0,0.0,0.0, 20.0, 1, 0, 0, 2)
-	PointCamAtCoord(cam,chardata.position.x,chardata.position.y,chardata.position.z)
-	TaskTurnPedToFaceCoord(peds[slot],chardata.position.x,chardata.position.y+10,chardata.position.z+0.5)
+	local model = GetModel(chardata.sex)
+	RequestModel(model)
+	while not HasModelLoaded(model) do
+		RequestModel(model)
+		Wait(0)
+	end
+	SetLocalPlayerVisibleLocally(true)
+	SetPlayerModel(PlayerId(), model)
+	FreezeEntityPosition(PlayerPedId(),false)
+	SetEntityCoordsNoOffset(PlayerPedId(),chardata.position.x,chardata.position.y,chardata.position.z+0.1,true, false, false, false)
+	SetFocusPosAndVel(chardata.position.x+2,chardata.position.y+2,chardata.position.z+0.5)
+	SetCamParams(cam, chardata.position.x,chardata.position.y+2,chardata.position.z+0.2, 0.0,0.0,0.0, 75.0, 1, 0, 0, 2)
+	PointCamAtCoord(cam,chardata.position.x,chardata.position.y,chardata.position.z+0.1)
+	RenderScriptCams(true, true, 0, true, true)
+	SetSkin(PlayerPedId(), skin)
+	--lastped = ClonePed(PlayerPedId(), false, false, true)
+	--SetEntityCoordsNoOffset(PlayerPedId(),chardata.position.x,chardata.position.y,chardata.position.z-0.7,true, false, false, false)
+	Wait(200)
+	TaskTurnPedToFaceCoord(PlayerPedId(),chardata.position.x,chardata.position.y+2,chardata.position.z+0.2,5000)
+	SetFocusEntity(PlayerPedId())
 end
 
 SetupPlayer = function()
@@ -265,6 +271,7 @@ ChooseCharacter = function(slot)
 		slot = characters[slot].citizenid
 	end
 	local login = callback('renzu_multicharacter:choosecharacter', slot)
+	SetFrontendActive(false)
 end
 
 SpawnSelect = function(coord)
@@ -294,7 +301,7 @@ local skin = {}
 -- SKIN FUNCTIONS
 SetSkin = function(ped,skn)
 	if Config.skinchanger then
-		exports['skinchanger']:loadmulticharpeds(ped, skn)
+		TriggerEvent('skinchanger:loadSkin', skn)
 	elseif Config.fivemappearance then
 		exports['fivem-appearance']:setPedAppearance(ped, skn)
 	elseif Config.framework == 'QBCORE' then
@@ -424,7 +431,6 @@ end)
 RegisterCommand('relog', function(source, args, rawCommand)
 	if Config.Relog and not LocalPlayer.state.isdead then
 		TriggerServerEvent('esx_multicharacter:relog')
-		SetEntityVisible(PlayerPedId(),false)
 	end
 end)
 
@@ -464,19 +470,17 @@ RegisterNUICallback('nuicb', function(data)
 		pedshots[chosenslot] = nil
 	end
 	if data.msg == 'sex' then
-		DeleteEntity(peds[data.slot])
 		local model = data.sex == 'm' and `mp_m_freemode_01` or `mp_f_freemode_01`
 		RequestModel(model)
 		while not HasModelLoaded(model) do
-				Wait(100)
+			RequestModel(model)
+			Wait(0)
 		end
-		peds[data.slot] = CreatePed(4,model, defaultspawn.x,defaultspawn.y,defaultspawn.z-0.5, 0.0,0,1)
-		while not DoesEntityExist(peds[data.slot]) do Wait(1) end
-		lastped = peds[data.slot]
-		SetSkin(peds[data.slot],Config.Default[data.sex])
+		SetPlayerModel(PlayerId(), model)
+		SetSkin(PlayerPedId(),Config.Default[data.sex])
 		characters[tonumber(data.slot)] = {position = {x = defaultspawn.x, y = defaultspawn.y+10, z = defaultspawn.z}, new = true}
-		SetBlockingOfNonTemporaryEvents(peds[data.slot], true)
-		TaskTurnPedToFaceCoord(peds[data.slot],defaultspawn.x,defaultspawn.y,defaultspawn.z)
+		SetBlockingOfNonTemporaryEvents(PlayerPedId(), true)
+		TaskTurnPedToFaceCoord(PlayerPedId(),defaultspawn.x,defaultspawn.y,defaultspawn.z)
 	end
 end)
 
@@ -486,7 +490,7 @@ GetPedShot = function(ped)
 	local tempHandle = RegisterPedheadshotTransparent(ped)
 	local headshotTxd = nil
 
-	local timer = 1200
+	local timer = 1100
 	while not IsPedheadshotReady(tempHandle) and timer > 0 or not IsPedheadshotValid(tempHandle) and timer > 0 do
 		Wait(1)
 		timer = timer - 10
@@ -494,7 +498,7 @@ GetPedShot = function(ped)
 	headshotTxd = GetPedheadshotTxdString(tempHandle)
 	if headshotTxd == nil or headshotTxd == 0 or tempHandle == 0 or not IsPedheadshotValid(tempHandle) then
 		tempHandle = RegisterPedheadshot_3(ped)
-		timer = 1200
+		timer = 1100
 		while not IsPedheadshotReady(tempHandle) and timer > 0 or not IsPedheadshotValid(tempHandle) and timer > 0 do
 			Wait(1)
 			timer = timer - 10

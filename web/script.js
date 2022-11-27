@@ -32,8 +32,11 @@ window.addEventListener('message', function (table) {
     let event = table.data;
     if (event.fade) {
         getEl('body').style.display = 'block'
+        getEl('logocontainer').style.display = 'none'
+        getEl('loading').style.display = 'block'
         getEl('body').style.background = 'rgba(0, 0, 0, 1.0)'
     } else if (event.fade == false) {
+        getEl('loading').style.display = 'none'
         getEl('body').style.background = 'rgba(0, 0, 0, 0.0)'
     }
     if (event.pedshots) {
