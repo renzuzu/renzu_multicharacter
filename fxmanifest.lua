@@ -7,6 +7,7 @@ ui_page {
 }
 client_scripts {
 	'config.lua',
+	'default_skin.lua',
 	'client/main.lua'
 }
 
