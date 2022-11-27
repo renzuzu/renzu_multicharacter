@@ -22,5 +22,6 @@ files {
 	'web/script.js',
 	'web/style.css',
 	'web/logo.png',
+	'web/loading.gif',
 	'web/ped.jpg',
 }
