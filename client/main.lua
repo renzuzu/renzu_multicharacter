@@ -207,23 +207,26 @@ ShowCharacter = function(slot)
 		SendNUIMessage({showoptions = 'existing', slot = slot})
 	else
 		SendNUIMessage({showoptions = 'new', slot = slot})
-		local ped = PlayerPedId()
-		SetEntityCoords(ped,defaultspawn.x,defaultspawn.y,defaultspawn.z-0.9)
 		local model = GetModel('m')
 		RequestModel(model)
 		while not HasModelLoaded(model) do
 			RequestModel(model)
 			Wait(0)
 		end
+		SetEntityCoords(PlayerPedId(),defaultspawn.x,defaultspawn.y,defaultspawn.z)
+		SetLocalPlayerVisibleLocally(true)
 		SetPlayerModel(PlayerId(), model)
-		SetSkin(ped,Config.Default['m'])
+		FreezeEntityPosition(PlayerPedId(),false)
+		Wait(10)
+		SetSkin(PlayerPedId(),Config.Default[Config.skin]['m'])
 		characters[tonumber(slot)] = {position = {x = defaultspawn.x, y = defaultspawn.y+10, z = defaultspawn.z}, new = true}
-		SetBlockingOfNonTemporaryEvents(ped, true)
-		TaskTurnPedToFaceCoord(ped,defaultspawn.x,defaultspawn.y+10,defaultspawn.z)
+		SetBlockingOfNonTemporaryEvents(PlayerPedId(), true)
 		SetCamParams(cam, defaultspawn.x,defaultspawn.y+10,defaultspawn.z, 0.0,0.0,0.0, 20.0, 1, 0, 0, 2)
 		PointCamAtCoord(cam,defaultspawn.x,defaultspawn.y,defaultspawn.z)
 		--SetEntityCoords(PlayerPedId(),defaultspawn.x,defaultspawn.y+20,defaultspawn.z)
 		SetFocusPosAndVel(defaultspawn.x,defaultspawn.y+10,defaultspawn.z)
+		Wait(100)
+		TaskTurnPedToFaceCoord(PlayerPedId(),defaultspawn.x,defaultspawn.y+10,defaultspawn.z)
 		return
 	end
 	local skin = chardata.skin
@@ -241,6 +244,7 @@ ShowCharacter = function(slot)
 	end
 	SetLocalPlayerVisibleLocally(true)
 	SetPlayerModel(PlayerId(), model)
+	Wait(1)
 	FreezeEntityPosition(PlayerPedId(),false)
 	SetEntityCoordsNoOffset(PlayerPedId(),chardata.position.x,chardata.position.y,chardata.position.z+0.1,true, false, false, false)
 	SetFocusPosAndVel(chardata.position.x+2,chardata.position.y+2,chardata.position.z+0.5)
@@ -297,37 +301,36 @@ SpawnSelect = function(coord)
 end
 
 local skin = {}
-
 -- SKIN FUNCTIONS
 SetSkin = function(ped,skn)
-	if Config.skinchanger then
+	if Config.skin == 'skinchanger' then
 		TriggerEvent('skinchanger:loadSkin', skn)
-	elseif Config.fivemappearance then
-		exports['fivem-appearance']:setPedAppearance(ped, skn)
-	elseif Config.framework == 'QBCORE' then
-		TriggerEvent('qb-clothing:client:loadPlayerClothing', skn, ped)
+	elseif Config.skin == 'fivemappearance' then
+		exports['fivem-appearance']:setPedAppearance(PlayerPedId(), skn)
+	elseif Config.skin == 'qb-clothing' then
+		TriggerEvent('qb-clothing:client:loadPlayerClothing', skn, PlayerPedId())
 	end
 end
 
 GetModel = function(str)
-	if Config.skinchanger then
-		skin = Config.Default[str or 'm']
+	if Config.skin == 'skinchanger' then
+		skin = Config.Default[Config.skin][str or 'm']
 		skin.sex = str == "m" and 0 or 1
 		local model = skin.sex == 0 and `mp_m_freemode_01` or `mp_f_freemode_01`
 		return model
-	elseif Config.fivemappearance then
+	elseif Config.skin == 'fivemappearance' then
 		skin.sex = str == "m" and 0 or 1
 		local model = skin.sex == 0 and `mp_m_freemode_01` or `mp_f_freemode_01`
 		return model
-	elseif Config.framework == 'QBCORE' then
-		local model = skin.sex == 0 and `mp_m_freemode_01` or `mp_f_freemode_01`
+	elseif Config.skin == 'qb-clothing' then
+		local model = str == 'm' and `mp_m_freemode_01` or `mp_f_freemode_01`
 		return model
 	end
 end
 
 finished = false
 SkinMenu = function()
-	if Config.skinchanger then
+	if Config.skin == 'skinchanger' then
 		TriggerEvent('skinchanger:loadSkin', skin, function()
 			local playerPed = PlayerPedId()
 			SetPedAoBlobRendering(playerPed, true)
@@ -337,7 +340,7 @@ SkinMenu = function()
 				finished = true end, function() finished = true
 			end)
 		end)
-	elseif Config.fivemappearance then
+	elseif Config.skin == 'fivemappearance' then
 		local config = {
 			ped = true,
 			headBlend = true,
@@ -359,17 +362,17 @@ SkinMenu = function()
 			finished = true
 		end
 		end, config)
-	elseif Config.framework == 'QBCORE' then
+	elseif Config.skin == 'qb-clothing' then
 		TriggerEvent('qb-clothing:client:openMenu')
 	end
 end
 
 LoadSkin = function()
-	if Config.skinchanger then
+	if Config.skin == 'skinchanger' then
 		TriggerEvent('skinchanger:loadSkin', characters[chosenslot].skin)
-	elseif Config.fivemappearance then
+	elseif Config.skin == 'fivemappearance' then
 		exports['fivem-appearance']:setPlayerAppearance(characters[chosenslot].skin)
-	elseif Config.framework == 'QBCORE' then
+	elseif Config.skin == 'qb-clothing' then
 		TriggerEvent('qb-clothing:client:loadPlayerClothing', characters[chosenslot].skin, PlayerPedId())
 	end
 end
@@ -477,10 +480,9 @@ RegisterNUICallback('nuicb', function(data)
 			Wait(0)
 		end
 		SetPlayerModel(PlayerId(), model)
-		SetSkin(PlayerPedId(),Config.Default[data.sex])
+		SetSkin(PlayerPedId(),Config.Default[Config.skin][data.sex])
 		characters[tonumber(data.slot)] = {position = {x = defaultspawn.x, y = defaultspawn.y+10, z = defaultspawn.z}, new = true}
 		SetBlockingOfNonTemporaryEvents(PlayerPedId(), true)
-		TaskTurnPedToFaceCoord(PlayerPedId(),defaultspawn.x,defaultspawn.y,defaultspawn.z)
 	end
 end)
 
