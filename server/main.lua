@@ -9,11 +9,13 @@ end)
 
 registercallback('renzu_multicharacter:choosecharacter', function(source,slot)
 	Login(source,slot,nil)
+	SetPlayerRoutingBucket(source,0)
 	return LoadPlayer(source)
 end)
 
 registercallback('renzu_multicharacter:createcharacter', function(source,data)
 	Login(source,data.slot,data.info)
+	SetPlayerRoutingBucket(source,0)
 	return LoadPlayer(source)
 end)
 
@@ -27,6 +29,7 @@ registercallback('renzu_multicharacter:saveappearance', function(source,skin)
 end)
 
 registercallback('getcharacters', function(source,data)
+	SetPlayerRoutingBucket(source,math.random(99,999))
 	return GetCharacters(source,data)
 end)
 
