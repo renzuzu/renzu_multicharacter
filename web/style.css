@@ -62,7 +62,7 @@ img {
   direction: rtl;
   display: grid;
   row-gap: 1rem;
-  height: 74vh;
+  max-height: 74vh;
   position: absolute;
   top: 10%;
   overflow-x: hidden;
