@@ -523,8 +523,8 @@ end
 
 CheckStates = function()
 	DoScreenFadeOut(0)
-	local states = characters[chosenslot]?.extras
-	if characters[chosenslot] and characters[chosenslot]?.extras then
+	local states = characters[chosenslot].extras
+	if characters[chosenslot] and characters[chosenslot].extras then
 		for name,data in pairs(states) do
 			HandleStates(name,data)
 		end
