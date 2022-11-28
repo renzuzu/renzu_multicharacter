@@ -533,8 +533,8 @@ CheckStates = function()
 	DoScreenFadeIn(1000)
 end
 
-RegisterStates = function(name,cb,notspawnselector)
-	states[name] = {spawn = notspawnselector, cb = cb}
+RegisterStates = function(name,cb,spawnselector)
+	states[name] = {spawn = spawnselector, cb = cb}
 	AddStateBagChangeHandler(name, nil, function(bagName, _, value, _, _)
 		Wait(0)
 		if value == nil or logout then return end
