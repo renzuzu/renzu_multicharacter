@@ -95,14 +95,18 @@ window.addEventListener('message', function (table) {
                 </div>
             </div>
 
-            <div style="z-index:99;display:none;">
-                <a onclick="return extras('premium')" href="#" class="char__extras"><i class="fas fa-star" aria-hidden="true"></i></a>
-                <a onclick="return extras('vehicles')" href="#" class="char__extras"><i class="fas fa-car" aria-hidden="true"></i></a>
-                <a onclick="return extras('items')" href="#" class="char__extras"><i class="fas fa-archive"></i></a>
+            <div class="extras" id="extras_${i}">
             </div>
             </div>`
             getEl('characters').insertAdjacentHTML("beforeend", ui)
+            for (const ex in chars[index].extras || {}) {
+                if (chars[index].extras[ex]) {
+                    let ui = `<a href="#" class="char__extras with-tooltip" data-tooltip-content="${ex}">${event.extras[ex]}</a>`
+                    getEl(`extras_${i}`).insertAdjacentHTML("beforeend", ui)
+                }
+            }
         }
+
     }
     if (event.showoptions == 'existing') {
         getEl('login').innerHTML = 'Choose'

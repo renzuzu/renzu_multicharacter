@@ -6,6 +6,8 @@ local models = {
 local defaultspawn = Config.Spawn
 local xSound = nil
 local slots = Config.Slots
+local states = {}
+local logout = false
 xsound = function()
 	o = function()
 		sound = exports.xSound
@@ -135,7 +137,7 @@ IntroCam = function()
 	local camloc = Config.CameraIntro
 	SendNUIMessage({showlogo = true})
 	while #(GetFinalRenderedCamCoord() - vec3(1609.6380615234,-2272.8967285156,483.33)) > 10 do Wait(111) end
-	SendNUIMessage({characters = characters, slots = slots})
+	SendNUIMessage({characters = characters, slots = slots, extras = Config.Status})
 	while not chosen do
 		for k,v in ipairs(camloc) do
 			if not chosen then
@@ -212,10 +214,7 @@ ShowCharacter = function(slot)
 		SendNUIMessage({showoptions = 'new', slot = slot})
 		local model = GetModel('m')
 		RequestModel(model)
-		while not HasModelLoaded(model) do
-			RequestModel(model)
-			Wait(0)
-		end
+		while not HasModelLoaded(model) do Wait(0) end
 		SetEntityCoords(PlayerPedId(),defaultspawn.x,defaultspawn.y,defaultspawn.z)
 		SetLocalPlayerVisibleLocally(true)
 		SetPlayerModel(PlayerId(), model)
@@ -274,11 +273,9 @@ end
 
 ChooseCharacter = function(slot)
 	chosenslot = slot
-	if Config.framework == 'QBCORE' then
-		slot = characters[slot].citizenid
-	end
+	if Config.framework == 'QBCORE' then slot = characters[slot].citizenid end
 	local login = callback('renzu_multicharacter:choosecharacter', slot)
-	SetFrontendActive(false)
+	SetTimeout(0,CheckStates)
 end
 
 SpawnSelect = function(coord)
@@ -298,6 +295,9 @@ SpawnSelect = function(coord)
         end
 	end
 	if Config.SpawnSelector then
+		local state = states or {}
+		local extras = characters[chosenslot] and characters[chosenslot].extras
+		for k,v in pairs(state) do if not v.spawn and v.value and extras and extras[k] then return end end
 		local coord = coord
 		spawn = Config.SpawnSelectorExport(coord)
 	end
@@ -346,15 +346,7 @@ SkinMenu = function()
 			end
 		end)
 	elseif Config.skin == 'fivemappearance' then
-		local config = {
-			ped = true,
-			headBlend = true,
-			faceFeatures = true,
-			headOverlays = true,
-			components = true,
-			props = true,
-			tattoos = true
-		}
+		local config = {ped = true,headBlend = true,faceFeatures = true,headOverlays = true,components = true,props = true,tattoos = true}
 		local playerPed = PlayerPedId()
 		SetPedAoBlobRendering(playerPed, true)
 		ResetEntityAlpha(playerPed)
@@ -391,6 +383,7 @@ end
 RegisterNetEvent('esx:playerLoaded', function(playerData, isNew, skin)
 	local spawn = playerData.coords
 	skin = skin
+	logout = false
 	if not isNew then
 		if string.find(tostring(playerData.sex):lower(), 'mal') then playerData.sex ='m' elseif string.find(tostring(playerData.sex):lower(),'fem') then playerData.sex = 'f' end -- supports other identity logic
 		skin.sex = playerData.sex == "m" and 0 or 1
@@ -412,7 +405,9 @@ RegisterNetEvent('esx:playerLoaded', function(playerData, isNew, skin)
 		end
 		SetPlayerModel(PlayerId(), model)
 		SetModelAsNoLongerNeeded(model)
-		SetupPlayer()
+		if not Config.SpawnSelector then
+			SetupPlayer()
+		end
 		SkinMenu()
 		Wait(100)
 		--repeat Wait(200) until finished
@@ -425,6 +420,7 @@ RegisterNetEvent('esx:playerLoaded', function(playerData, isNew, skin)
 	TriggerEvent('esx:onPlayerSpawn')
 	TriggerEvent('playerSpawned')
 	TriggerEvent('esx:restoreLoadout')
+	FreezeEntityPosition(PlayerPedId(),false)
 end)
 
 RegisterNetEvent('esx:onPlayerLogout', function()
@@ -443,6 +439,7 @@ end)
 RegisterCommand('relog', function(source, args, rawCommand)
 	if Config.Relog and not LocalPlayer.state.isdead then
 		TriggerServerEvent('esx_multicharacter:relog')
+		logout = true
 	end
 end)
 
@@ -523,3 +520,51 @@ end
 ClearPedHeadshots = function(handle)
 	UnregisterPedheadshot(handle)
 end
+
+CheckStates = function()
+	DoScreenFadeOut(0)
+	local states = characters[chosenslot]?.extras
+	if characters[chosenslot] then
+		for name,data in pairs(states) do
+			HandleStates(name,data)
+		end
+	end
+	Wait(1000)
+	DoScreenFadeIn(1000)
+end
+
+RegisterStates = function(name,cb,notspawnselector)
+	states[name] = {spawn = notspawnselector, cb = cb}
+	AddStateBagChangeHandler(name, nil, function(bagName, _, value, _, _)
+		Wait(0)
+		if value == nil or logout then return end
+		states[name].value = value
+	end)
+	return states[name].cb()
+end
+
+exports('RegisterStates', RegisterStates)
+
+-- advanced usage
+HandleStates = function(name,data)
+	-- this is where callbacks will handle
+	-- if data.server and name == 'inhouse' then
+	-- TriggerServerEvent('resource_sample:ishouse')
+	-- end
+	-- datas are manage by you on how your manage states from player
+
+	-- my use case and example
+	if name == 'invehicle' and data and type(data) == 'table' then
+		local lastvehicle = callback('setplayertolastvehicle',data.net) -- this will set the player to its last vehicle
+	end
+end
+
+-- sample register states
+-- exports.renzu_multicharacter:RegisterStates('invehicle', function()
+-- 	if not lib then return end -- ox_lib
+-- 	print('registered')
+-- 	lib.onCache('vehicle', function(value)
+-- 		print(value)
+-- 		LocalPlayer.state:set('invehicle',value and {net = NetworkGetNetworkIdFromEntity(value) or false},true)
+-- 	end)
+-- end,false)

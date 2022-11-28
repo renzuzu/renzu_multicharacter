@@ -70,9 +70,11 @@ img {
 .char__card, .char__data {
   display: flex;
   align-items: center;
+  width: 100%;
 }
 .char__card {
   direction:ltr;
+  position: relative;
   width: 360px;
   justify-content: space-between;
   padding: 0.75rem 1.25rem 0.75rem 0.75rem;
@@ -105,6 +107,8 @@ img {
   margin: 0 0.375rem;
   color: var(--first-color-light);
   transition: 0.4s;
+  float: right;
+  padding: 2px;
 }
 .char__extras:hover {
   color: var(--first-color);
@@ -348,8 +352,15 @@ input[type=radio] {
 }
 
 #playerinfo {
-  width: 15vw;
-  overflow: hidden;
+  width: 100%;
+}
+
+.extras {
+  z-index: 99;
+  position: absolute;
+  right: 1%;
+  width: 80px;
+  bottom: 39%;
 }
 
 #option {
@@ -388,6 +399,37 @@ input[type=radio] {
   position: absolute;
   bottom: 5%;
   left: 2%;
+}
+
+.with-tooltip {
+  position: relative;
+  z-index:111;
+}
+
+.with-tooltip::after {
+  content: attr(data-tooltip-content);
+  padding: 8px;
+  border-radius: 4px;
+  position: absolute;
+  color: white;
+  bottom: 115%;
+  right: 50%;
+  left: 50%;
+  width: max-content;
+  background-color: gray;
+  opacity: 0;
+  font-size: 0.8rem;
+  visibility: hidden;
+  transform: translate(-50%, 18px) scale(0.8);
+  transition: visibility, opacity, transform 200ms;
+  z-index:111;
+}
+
+.with-tooltip:hover::after {
+  visibility: visible;
+  opacity: 1;
+  transform: translate(-50%, 0);
+  z-index:111;
 }
 
   * {

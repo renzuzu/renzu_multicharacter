@@ -12,6 +12,7 @@ function GetPlayerFromId(src)
 		return ESX.GetPlayerFromId(self.src)
 	elseif Config.framework == 'QBCORE' then
 		xPlayer = QBCore.Functions.GetPlayer(self.src)
+		xPlayer.identifier = xPlayer.citizenid
 		if not xPlayer then return end
 		return xPlayer
 	end
@@ -36,6 +37,7 @@ GetCharacters = function(source,data,slots)
 			if not characters[id] then
 				characters[id] = {
 					slot = id,
+					identifier = v.identifier,
 					name = firstname..' '..lastname,
 					job = job or 'Unemployed',
 					grade = grade or 'No grade',
@@ -45,6 +47,7 @@ GetCharacters = function(source,data,slots)
 					skin = v.skin and json.decode(v.skin) or {},
 					sex = v.sex,
 					position = v.position and json.decode(v.position) or vec3(280.03,-584.29,43.29),
+					extras = GetExtras(v.identifier,v.group)
 				}
 			end
 		end
@@ -67,9 +70,11 @@ GetCharacters = function(source,data,slots)
 				bank = money.bank,
 				money = money.cash,
 				citizenid = result[i].citizenid,
+				identifier = result[i].citizenid,
 				skin = skin and skin[1] and json.decode(skin[1].skin) or {},
 				sex = info.gender == 0 and 'm' or 'f',
 				position = result[i].position and json.decode(result[i].position) or vec3(280.03,-584.29,43.29),
+				extras = GetExtras(result[i].citizenid)
 			}
 		end
 		return {characters = characters , slots = slots}
@@ -103,6 +108,8 @@ end
 
 LoadPlayer = function(source)
 	while not GetPlayerFromId(source) do Wait(0) print('Loading Data for '..GetPlayerName(source)..'') end
+	local ply = Player(source).state
+	ply:set('identifier',GetPlayerFromId(source).identifier,true)
 	return true
 end
 
@@ -125,7 +132,7 @@ Login = function(source,data,new,qbslot)
 		print('^2[qb-core]^7 '..GetPlayerName(source)..' (Citizen ID: '..data..') has succesfully loaded!')
         QBCore.Commands.Refresh(source)
 		-- this codes below should be in playerloaded event in server. but here we need this to trigger qb-spawn and to support apartment
-		loadHouseData(source)
+		--loadHouseData(source)
 		TriggerClientEvent('apartments:client:setupSpawnUI', source, {citizenid = data})
 		TriggerEvent("qb-log:server:CreateLog", "joinleave", "Loaded", "green", "**".. GetPlayerName(source) .. "** ("..(QBCore.Functions.GetIdentifier(source, 'discord') or 'undefined') .." |  ||"  ..(QBCore.Functions.GetIdentifier(source, 'ip') or 'undefined') ..  "|| | " ..(QBCore.Functions.GetIdentifier(source, 'license') or 'undefined') .." | " ..data.." | "..source..") loaded..")
 	end
@@ -153,35 +160,11 @@ SaveSkin = function(source,skin) -- only used on fivemappearance character creat
 	return true
 end
 
-function loadHouseData(src)
-    local HouseGarages = {}
-    local Houses = {}
-    local result = MySQL.query.await('SELECT * FROM houselocations', {})
-    if result[1] ~= nil then
-        for _, v in pairs(result) do
-            local owned = false
-            if tonumber(v.owned) == 1 then
-                owned = true
-            end
-            local garage = v.garage ~= nil and json.decode(v.garage) or {}
-            Houses[v.name] = {
-                coords = json.decode(v.coords),
-                owned = owned,
-                price = v.price,
-                locked = true,
-                adress = v.label,
-                tier = v.tier,
-                garage = garage,
-                decorations = {},
-            }
-            HouseGarages[v.name] = {
-                label = v.label,
-                takeVehicle = garage,
-            }
-        end
-    end
-    TriggerClientEvent("qb-garages:client:houseGarageConfig", src, HouseGarages)
-    TriggerClientEvent("qb-houses:client:setHouseConfig", src, Houses)
+GetExtras = function(id,group)
+	local status = GlobalState.PlayerStates or {}
+	local admin = group ~= nil and group ~= 'user'
+	if admin then if not status[id] then status[id] = {} end status[id]['admin'] = true end
+	return status[id] or {}
 end
 
 UpdateSlot = function(id,slot)
@@ -205,4 +188,6 @@ Command = function(command)
 	end
 end
 
-Command('updatecharslots')
+Command(Config.commandslot)
+
+GlobalState.PlayerStates = json.decode(GetResourceKvpString("char_status") or '[]') or {}

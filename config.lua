@@ -24,7 +24,8 @@ Config.CameraIntro = { -- camera locations when doing intro
 -- Allows players to delete their characters
 Config.CanDelete = true
 -- This is the default number of slots for EVERY player
-Config.Slots = 5 -- todo with possible command for admins.
+Config.Slots = 5
+Config.commandslot = 'updatecharslots' -- /updatecharslots 7
 --------------------
 
 -- Text to prepend to each character (char#:identifier) - keep it short
@@ -65,3 +66,20 @@ for resource,v in pairs(Config.SkinMenus) do
 		end
 	end
 end
+
+-- extra ui info ex. LocalPlayer.state:set('invehicle',true,true)
+-- take note this utilise state bag. so the state value should be sent by client or server manualy.
+Config.Status = {
+	['invehicle'] = '<i class="fas fa-car-side"></i>',
+	['isdead'] = '<i class="fas fa-skull-crossbones"></i>',
+	['premium'] = '<i class="fas fa-star"></i>',
+	['injail'] = '<i class="fas fa-drum-steelpan"></i>',
+	['iscuffed'] = '<i class="fab fa-fedora"></i>',
+	['incommunityservice'] = '<i class="fas fa-broom"></i>',
+	['isbanned'] = '<i class="fas fa-user-lock"></i>',
+	['inbed'] = '<i class="fas fa-bed"></i>',
+	['inhouse'] = '<i class="fas fa-house-user"></i>',
+	['inapartment'] = '<i class="fas fa-building"></i>',
+	['inmlo'] = '<i class="fas fa-home"></i>',
+	['admin'] = '<i class="fas fa-crown"></i>',
+}
