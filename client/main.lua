@@ -263,7 +263,7 @@ ShowCharacter = function(slot)
 end
 
 SetupPlayer = function()
-	local coord = vec3(characters[chosenslot].position.x,characters[chosenslot].position.y,characters[chosenslot].position.z)
+	local coord = vec3(characters[chosenslot].position.x,characters[chosenslot].position.y,characters[chosenslot].position.z-0.7)
 	SetFocusPosAndVel(coord.x,coord.y,coord.z)
 	RequestCollisionAtCoord(coord.x,coord.y,coord.z)
 	SetEntityCoords(PlayerPedId(),coord.x,coord.y,coord.z)
@@ -339,9 +339,11 @@ SkinMenu = function()
 			SetPedAoBlobRendering(playerPed, true)
 			ResetEntityAlpha(playerPed)
 			SetEntityVisible(playerPed,true)
-			TriggerEvent('esx_skin:openSaveableMenu', function()
-				finished = true end, function() finished = true
-			end)
+			if Config.SkinMenu[Config.skin].event then
+				TriggerEvent(Config.SkinMenu[Config.skin].event)
+			elseif Config.SkinMenu[Config.skin].exports then
+				Config.SkinMenu[Config.skin].exports()
+			end
 		end)
 	elseif Config.skin == 'fivemappearance' then
 		local config = {
@@ -366,7 +368,11 @@ SkinMenu = function()
 		end
 		end, config)
 	elseif Config.skin == 'qb-clothing' then
-		TriggerEvent('qb-clothing:client:openMenu')
+		if Config.SkinMenu[Config.skin].event then
+			TriggerEvent(Config.SkinMenu[Config.skin].event)
+		elseif Config.SkinMenu[Config.skin].exports then
+			Config.SkinMenu[Config.skin].exports()
+		end
 	end
 end
 
@@ -406,8 +412,10 @@ RegisterNetEvent('esx:playerLoaded', function(playerData, isNew, skin)
 		end
 		SetPlayerModel(PlayerId(), model)
 		SetModelAsNoLongerNeeded(model)
+		SetupPlayer()
 		SkinMenu()
-		repeat Wait(200) until finished
+		Wait(100)
+		--repeat Wait(200) until finished
 	end
 
 	if not isNew then LoadSkin() end
@@ -417,7 +425,6 @@ RegisterNetEvent('esx:playerLoaded', function(playerData, isNew, skin)
 	TriggerEvent('esx:onPlayerSpawn')
 	TriggerEvent('playerSpawned')
 	TriggerEvent('esx:restoreLoadout')
-	SetupPlayer()
 end)
 
 RegisterNetEvent('esx:onPlayerLogout', function()

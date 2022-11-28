@@ -36,3 +36,32 @@ Config.Spawn = vector3(-1037.59,-2736.90,20.16)
 -- Do not use unless you are prepared to adjust your resources to correctly reset data
 Config.Relog = true
 -------------------
+
+-- skin menus
+-- set use to true if you want to use the skin menus
+-- do not set multiple trues on the same resource eg. skinchanger
+-- you can add more skin menu or creator events
+Config.SkinMenus = {
+	['skinchanger'] = {
+		['esx_skin'] = {event = 'esx_skin:openSaveableMenu', use = true},
+		['VexCreator'] = {event = 'VexCreator:loadCreator', use = false},
+		['cui_character'] = {event = 'cui_character:open', use = false},
+		['example_resource'] = {exports = 'exports.example:Creator', event = nil, use = false}, -- example support exports
+	},
+	['fivemappearance'] = {}, -- is there any creator uses fivemappearance? i will leave this todo for now
+	['qb-clothing'] = {
+		['qb-clothing'] = { event = 'qb-clothing:client:openMenu', use = true},
+	},
+}
+
+--- do not edit
+Config.SkinMenu = {}
+for resource,v in pairs(Config.SkinMenus) do
+	if resource == Config.skin then
+		for k,v in pairs(v) do
+			if v.use then
+				Config.SkinMenu[resource] = {event = v.event or false, exports = v.exports or false}
+			end
+		end
+	end
+end
