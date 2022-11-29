@@ -1,10 +1,10 @@
-# renzu_multicharacter
+# 👯 renzu_multicharacter
+Hi, i want to share this new resource :heart: 
 Fivem - ESX &amp; QBCORE Multicharacters
-![image](https://user-images.githubusercontent.com/82306584/204109418-19518fb1-f2d3-4818-86b4-f41b21f423c3.png)
-![image](https://user-images.githubusercontent.com/82306584/204109522-ad386b70-eeef-4a4c-8b84-f1d190e6a189.png)
-![image](https://user-images.githubusercontent.com/82306584/204109548-2ce22080-4279-4e26-a4ca-d8e120e021ac.png)
 
-# Feature
+![image](https://user-images.githubusercontent.com/82306584/204663183-47535b6d-1f4c-4a4a-9bff-7f9132dcd50b.png)
+
+# :boom: Feature
 - Support ESX and QBCORE
 - ESX Legacy Standard Multicharacter Logic using (char) as prefix
 - Intro Cameras and BG music
@@ -18,11 +18,11 @@ Fivem - ESX &amp; QBCORE Multicharacters
 - Support Starter items
 - Player States on UI
 
-# Commands
+# 🕹️ Commands
 - /relog (logout)
 - /updatecharslots (update the total of slots) ex. /updatecharslots ID 10
 
-# Skin Resource
+# 👦🏻 Skin Resource
 - Support skinchanger, fivemappearance, qb-clothing
 ```
 Config.skin = 'skinchanger' -- skinchanger , fivemappearance, qb-clothing
@@ -44,8 +44,10 @@ Config.SkinMenus = {
 }
 ```
 
-# Player States in UI
+# #️⃣ Player States in UI
 ![image](https://user-images.githubusercontent.com/82306584/204421392-1f1df56b-60c2-483c-ba14-a5c7bd802f92.png)
+
+[details="States Information"]
 - this shows the current state of player if its set manually. (ex. shows if player is dead)
 - callbacks are triggered once player has been login.
 - sample use case: register state if player is in vehicle'
@@ -67,9 +69,13 @@ end,false) -- set spawn selector true or false
 ```
  		LocalPlayer.state:set('isdead',value,true)
 ```
+[/details]
 
-# install
 
+# 🛠️ install
+
+
+[details="Installation"]
 -  make sure this config from esx is setup this way
 ```
 Config.Multichar                = true -- Enable support for esx_multicharacter
@@ -107,15 +113,20 @@ ALTER TABLE `users`
 
 # qbcore sql 
 - if you are recently using qb-multicharacters there should be no sql missing
+[/details]
 
 
-# Dependency
-- ESX or QBCORE
-- skinchanger or fivemappearance or qb-clothing
-- xsound or renzu_mp3 (for bg intro) (OPTIONAL)
-- renzu_spawn - for spawn selector (OPTIONAL) https://github.com/renzuzu/renzu_spawn
 
-# compatibilites
+# ⛓️ Dependency
+- [ESX](https://github.com/esx-framework/esx-legacy) or [QBCORE](https://github.com/Qbox-project/qb-core)
+- [skinchanger](https://github.com/esx-framework/esx-legacy/tree/755bb0f8aa9e1814d3db929c436ab1aa3c61f95b/%5Besx%5D/skinchanger) or [fivemappearance](https://github.com/wasabirobby/fivem-appearance) or [qb-clothing](https://github.com/Qbox-project/qb-clothing)
+- [xsound](https://github.com/Xogy/xsound) or [renzu_mp3](https://github.com/renzuzu/renzu_mp3) (for bg intro) (OPTIONAL)
+- [renzu_spawn](https://forum.cfx.re/t/renzu-spawn-character-spawn-selector/4959467) - for spawn selector (OPTIONAL)
+
+# 🤝 compatibilites
 - this supports qb-spawn ( you need to disable spawnselector in config ) - by default qbcore is setup this way. so you can have your spawn in aparment, housing etc.. (temporary until i release my housing with apartments)
 - esx_kashacters identifier logic - this dont support the old multicharacter logic. its only support if your esx legacy is using char as prefix for multicharacters
 - skinchanger repos - this supports the skinchanger so this probably supports CUI characters too. since its a revamped skinchanger with creator ui.
+
+# :heart:  contribution
+if you found issues or enhancement idea you can post it here or [here](https://github.com/renzuzu/renzu_multicharacter/issues)
