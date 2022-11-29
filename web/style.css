@@ -288,13 +288,13 @@ input[type=radio] {
   -webkit-font-smoothing: antialiased;
 }
 .gender .male::before {
-  content: "ïˆ¢";
+  content: "";
 }
 .gender .female::before {
-  content: "ïˆ¡";
+  content: "";
 }
 .gender .other::before {
-  content: "ïˆ¨";
+  content: "";
 }
 .gender input[type=radio]:checked ~ span:before {
   background-color: lightgreen;
