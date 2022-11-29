@@ -2,9 +2,7 @@
 Hi, i want to share this new resource :heart: 
 Fivem - ESX &amp; QBCORE Multicharacters
 
-![image](https://forum.cfx.re/uploads/default/original/4X/b/3/8/b383042cb19aafea6d832175062bd58ae0d6a814.gif)
-# 📥 Download
-https://github.com/renzuzu/renzu_multicharacter
+![image](https://user-images.githubusercontent.com/82306584/204663183-47535b6d-1f4c-4a4a-9bff-7f9132dcd50b.png)
 
 # :boom: Feature
 - Support ESX and QBCORE
