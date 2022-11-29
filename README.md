@@ -59,7 +59,7 @@ Config.SkinMenus = {
 ![image](https://user-images.githubusercontent.com/82306584/204421392-1f1df56b-60c2-483c-ba14-a5c7bd802f92.png)
 - this shows the current state of player if its set manually. (ex. shows if player is dead)
 - callbacks are triggered once player has been login.
-- sample use case: register state if player is in vehicle
+- sample use case: register state if player is in vehicle'
 ```
 exports.renzu_multicharacter:RegisterStates('invehicle', function()
  	if not lib then return end -- ox_lib
@@ -73,3 +73,7 @@ end,false)
 - and once the player accidentaly logout, once the player login again, they will automatically spawn on the vehicle even if its moving.
 - there could be more use case. like if player is in jail or hospital, community service you could potentially disable spawn selector for ex.
 - more use case is if player is in apartment or housing. you could preload the house while the player is respawning.
+- set manualy
+```
+ 		LocalPlayer.state:set('isdead',value,true)
+``
