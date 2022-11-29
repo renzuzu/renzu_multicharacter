@@ -27,7 +27,7 @@ GetCharacters = function(source,data,slots)
 		for k,v in pairs(data) do
 			local job, grade = v.job or 'unemployed', tostring(v.job_grade)
 			if ESX.Jobs[job] then
-				if job ~= 'unemployed' then grade = ESX.Jobs[job].grades[grade] and ESX.Jobs[job].grades[grade].label or ESX.Jobs[job].grades[tonumber(grade)] and ESX.Jobs[job].grades[tonumber(grade)].albel else grade = '' end
+				if job ~= 'unemployed' then grade = ESX.Jobs[job].grades[grade] and ESX.Jobs[job].grades[grade].label or ESX.Jobs[job].grades[tonumber(grade)] and ESX.Jobs[job].grades[tonumber(grade)].label else grade = '' end
 				job = ESX.Jobs[job].label
 			end
 			local accounts = json.decode(v.accounts)
