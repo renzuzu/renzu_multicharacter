@@ -194,12 +194,8 @@ function register() {
     let myForm = getEl('registerf')
     let formData = new FormData(myForm);
     let gag = Object.fromEntries(formData)
-    for (const i in gag) {
-        if (i == 'amount') {
-            amount = gag[i]
-        }
-    }
     getEl('body').style.display = 'none'
+    myForm.reset()
     return SendData({msg: 'create', info : gag, slot: chosenslot})
 }
 
