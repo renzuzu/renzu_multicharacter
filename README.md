@@ -113,7 +113,7 @@ ALTER TABLE `users`
 - ESX or QBCORE
 - skinchanger or fivemappearance or qb-clothing
 - xsound or renzu_mp3 (for bg intro) (OPTIONAL)
-- renzu_spawn - for spawn selector (OPTIONAL)
+- renzu_spawn - for spawn selector (OPTIONAL) https://github.com/renzuzu/renzu_spawn
 
 # compatibilites
 - this supports qb-spawn ( you need to disable spawnselector in config ) - by default qbcore is setup this way. so you can have your spawn in aparment, housing etc.. (temporary until i release my housing with apartments)
