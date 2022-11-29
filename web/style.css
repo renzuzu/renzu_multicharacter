@@ -26,9 +26,11 @@ header {
   display: grid;
   color:#fff;
   position: absolute;
-  top: 7%;
-  left: 3%;
+  top: 2%;
+  left: 5%;
   align-items: center;
+  z-index: 1;
+  width: 100%;
 }
 
 h1 {
@@ -60,12 +62,20 @@ img {
 .char__list {
   padding: 10px 20px 10px 10px;
   direction: rtl;
-  display: grid;
-  row-gap: 1rem;
-  max-height: 74vh;
+  /* display: grid; */
+  /* row-gap: 1rem; */
+  /* max-height: 71.1vh; */
   position: absolute;
   top: 10%;
-  overflow-x: hidden;
+  overflow: hidden;
+  background: #222428;
+  padding: 20px;
+  padding-top: 70px;
+  /* background: rgb(97,97,97); */
+  /* background: radial-gradient(circle, rgb(67 70 74) 0%, rgb(23 23 24) 86%); */
+  border-radius: 5px;
+  /* background: rgb(24,26,27); */
+  background: linear-gradient(0deg, rgb(19 20 24) 0%, rgb(13 16 20) 23%, rgb(17 19 24) 45%, rgb(9 12 16) 57%, rgb(19 20 24) 72%);
 }
 .char__card, .char__data {
   display: flex;
@@ -73,13 +83,14 @@ img {
   width: 100%;
 }
 .char__card {
-  direction:ltr;
+  direction:
+  ltr;
   position: relative;
   width: 360px;
   justify-content: space-between;
   padding: 0.75rem 1.25rem 0.75rem 0.75rem;
   background-color: #181920;
-  box-shadow: 4px 4px 16px #54585e, -2px -2px 8px #fff;
+  box-shadow: 1px 2px 4px #54585e, 1px -1px 1px #484b50;
   border-radius: 5px;
   font-weight: bolder;
   text-transform: uppercase;
@@ -87,10 +98,12 @@ img {
   cursor: pointer;
 }
 .char__img {
-  width: 55px;
-  height: 55px;
-  border-radius: 1rem;
+  width: 77px;
+  height: 77px;
+  border-radius: 1em;
   margin-right: 1rem;
+  border-style: outset;
+  border-color: #546176;
 }
 .char__name {
   font-size: var(--normal-font-size);
@@ -275,13 +288,13 @@ input[type=radio] {
   -webkit-font-smoothing: antialiased;
 }
 .gender .male::before {
-  content: "";
+  content: "ïˆ¢";
 }
 .gender .female::before {
-  content: "";
+  content: "ïˆ¡";
 }
 .gender .other::before {
-  content: "";
+  content: "ïˆ¨";
 }
 .gender input[type=radio]:checked ~ span:before {
   background-color: lightgreen;
@@ -401,6 +414,32 @@ input[type=radio] {
   left: 2%;
 }
 
+#characters {
+  overflow-x: hidden;
+  height: 70vh;
+  direction: rtl;
+  display: grid;
+  row-gap: 1rem;
+  max-height: 71.1vh;
+  /* position: absolute; */
+  /* top: 10%; */
+  /* overflow: hidden; */
+  /* background: #252a32; */
+  padding: 10px;
+}
+
+#minilogo {
+  height: 30px;
+  position: absolute;
+  left: 0;
+}
+
+#mychar {
+  position: relative;
+  right: 14%;
+  font-size: 1.5em;
+}
+
 .with-tooltip {
   position: relative;
   z-index:111;
@@ -446,7 +485,8 @@ input[type=radio] {
   }
 
   *::-webkit-scrollbar-thumb {
-    background-color: #2f3032;
-    border-radius: 10px;
-    border: 3px double #a7acaf;
+    background-color: #2a2d32;
+    border-radius: 1px;
+    /* border: 1px double #a7acaf; */
+    /* width: 1px; */
   }
