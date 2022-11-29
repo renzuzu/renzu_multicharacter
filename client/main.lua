@@ -203,6 +203,12 @@ Cleanups = function()
 	end
 end
 
+PlayAnim = function(ped,dict,anim)
+	RequestAnimDict(dict)
+	repeat Wait(1) until HasAnimDictLoaded(dict)
+	TaskPlayAnim(ped,dict,anim,1.0,1.0,-1,0,0,0,0,0)
+end
+
 ShowCharacter = function(slot)
 	chosenslot = slot
 	chosen = true
@@ -234,6 +240,9 @@ ShowCharacter = function(slot)
 		SetFocusPosAndVel(defaultspawn.x,defaultspawn.y+10,defaultspawn.z)
 		Wait(100)
 		TaskTurnPedToFaceCoord(PlayerPedId(),defaultspawn.x,defaultspawn.y+10,defaultspawn.z)
+		Wait(500)
+		local gestures = Config.Animations['choose'][math.random(1,#Config.Animations['choose'])]
+		PlayAnim(PlayerPedId(),gestures.dict,gestures.anim)
 		return
 	end
 	local skin = chardata.skin
@@ -259,6 +268,9 @@ ShowCharacter = function(slot)
 	Wait(200)
 	TaskTurnPedToFaceCoord(PlayerPedId(),chardata.position.x,chardata.position.y+2,chardata.position.z+0.2,5000)
 	SetFocusEntity(PlayerPedId())
+	Wait(500)
+	local gestures = Config.Animations['choose'][math.random(1,#Config.Animations['choose'])]
+	PlayAnim(PlayerPedId(),gestures.dict,gestures.anim)
 end
 
 SetupPlayer = function()
@@ -275,6 +287,7 @@ ChooseCharacter = function(slot)
 	chosenslot = slot
 	if Config.framework == 'QBCORE' then slot = characters[slot].citizenid end
 	local login = callback('renzu_multicharacter:choosecharacter', slot)
+	ClearPedTasks(PlayerPedId())
 	SetTimeout(0,CheckStates)
 end
 
@@ -415,6 +428,7 @@ RegisterNetEvent('esx:playerLoaded', function(playerData, isNew, skin)
 	TriggerEvent('playerSpawned')
 	TriggerEvent('esx:restoreLoadout')
 	FreezeEntityPosition(PlayerPedId(),false)
+	ClearPedTasks(PlayerPedId())
 end)
 
 RegisterNetEvent('esx:onPlayerLogout', function()
@@ -473,6 +487,10 @@ RegisterNUICallback('nuicb', function(data)
 		SetSkin(PlayerPedId(),Config.Default[Config.skin][data.sex])
 		characters[tonumber(data.slot)] = {position = {x = defaultspawn.x, y = defaultspawn.y+10, z = defaultspawn.z}, new = true}
 		SetBlockingOfNonTemporaryEvents(PlayerPedId(), true)
+	end
+	if data.msg == 'deleteattempt' then
+		local gestures = Config.Animations['delete'][math.random(1,#Config.Animations['delete'])]
+		PlayAnim(PlayerPedId(),gestures.dict,gestures.anim)
 	end
 end)
 

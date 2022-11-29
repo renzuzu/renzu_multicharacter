@@ -1,6 +1,6 @@
 local callbacks = {}
 local logout = {}
-registercallback = function(name,cb) -- create dependent callbacks. so we wont have much convertion for other frameworks
+registercallback = function(name,cb) -- create callbacks. so we wont have much convertion for other frameworks
 	callbacks[name] = cb
 end
 

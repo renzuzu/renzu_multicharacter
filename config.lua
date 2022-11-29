@@ -43,6 +43,35 @@ Config.ESXStarterItem = {
 	[2] = {item = 'water', amount = 10},
 }
 
+Config.Animations = {
+	['choose'] = {
+		[1] = {dict = 'anim@mp_player_intcelebrationfemale@blow_kiss', anim = 'blow_kiss'},
+		[2] = {dict = 'anim@arena@celeb@podium@no_prop@', anim = 'regal_c_1st'},
+
+		[3] = {dict = 'anim@mp_player_intcelebrationfemale@shadow_boxing', anim = 'shadow_boxing'},
+
+		[4] = {dict = 'mini@triathlon', anim = 'want_some_of_this'},
+
+		[5] = {dict = 'random@street_race', anim = 'grid_girl_race_start'},
+
+		[6] = {dict = 'amb@world_human_hang_out_street@male_c@idle_a', anim = 'idle_b'},
+
+		[7] = {dict = 'anim@arena@celeb@flat@solo@no_props@', anim = 'flip_a_player_a'},
+		[8] = {dict = 'timetable@reunited@ig_2', anim = 'jimmy_getknocked'},
+		[9] = {dict = 'anim@mp_player_intcelebrationmale@karate_chops', anim = 'karate_chops'},
+
+		[10] = {dict = 'anim@mp_player_intupperpeace', anim = 'idle_a_fp'},
+
+	},
+	['delete'] = {
+		[1] = {dict = 'anim@mp_player_intcelebrationmale@cut_throat', anim = 'cut_throat'},
+		[2] = {dict = 'gestures@m@standing@casual', anim = 'gesture_damn'},
+		[3] = {dict = 'anim@mp_player_intupperface_palm', anim = 'idle_a'},
+		[4] = {dict = 'anim@mp_player_intupperfinger', anim = 'idle_a_fp'},
+
+	}
+}
+
 -- skin menus
 -- set use to true if you want to use the skin menus
 -- do not set multiple trues on the same resource eg. skinchanger
