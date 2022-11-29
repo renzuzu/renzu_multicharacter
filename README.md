@@ -77,3 +77,24 @@ end,false)
 ```
  		LocalPlayer.state:set('isdead',value,true)
 ``
+
+# install
+
+-  make sure this config from esx is setup this way
+```
+Config.Multichar                = true -- Enable support for esx_multicharacter
+Config.Identity                 = true -- Select a characters identity data before they have loaded in (this happens by default with multichar)
+```
+- verify whats your framework config.lua
+```
+Config.framework = 'ESX' -- ESX or QBCORE
+```
+- verify your skin resource
+```
+Config.skin = 'skinchanger' -- skinchanger , fivemappearance, qb-clothing
+```
+- verify your using ESX legacy or latest QBCORE
+- stop esx_multicharacter
+- stop esx_identity or keep it
+- stop qb-multicharacters
+- stop qb-spawn if your are going to use my spawn resource. renzu_spawn
