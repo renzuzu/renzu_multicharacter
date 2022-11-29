@@ -74,9 +74,10 @@ end,false)
 - there could be more use case. like if player is in jail or hospital, community service you could potentially disable spawn selector for ex.
 - more use case is if player is in apartment or housing. you could preload the house while the player is respawning.
 - set manualy
+
 ```
  		LocalPlayer.state:set('isdead',value,true)
-``
+```
 
 # install
 
