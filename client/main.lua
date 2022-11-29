@@ -87,6 +87,13 @@ end
 
 local pedshots = {}
 
+SetModel = function(model)
+	RequestModel(model)
+	while not HasModelLoaded(model) do Wait(0) end
+	SetPlayerModel(PlayerId(), model)
+	SetModelAsNoLongerNeeded(model)
+end
+
 CreatePedHeadShots = function(characters)
 	for i = 1, slots do
 		local chardata = characters[i]
@@ -96,9 +103,7 @@ CreatePedHeadShots = function(characters)
 			skin.sex = chardata.sex == "m" and 0 or 1
 			local model = models[skin.sex] or models[0]
 			--SetEntityCoords(PlayerPedId(), chardata.position.x,chardata.position.y-10,chardata.position.z-0.5)
-			RequestModel(model)
-			while not HasModelLoaded(model) do Wait(0) end
-			SetPlayerModel(PlayerId(), model)
+			SetModel(model)
 			SetFocusEntity(PlayerPedId())
 			SetSkin(PlayerPedId(), skin)
 			Wait(211)
@@ -124,6 +129,7 @@ IntroCam = function()
 	slots = data.slots
 	characters = data.characters
 	DoScreenFadeIn(1000)
+	SetEntityVisible(PlayerPedId(),false)
 	SetEntityCoords(PlayerPedId(), 0.0,0.0,777.0)
 	CreatePedHeadShots(characters)
 	WeatherTransition()
@@ -183,6 +189,7 @@ end
 Cleanups = function()
 	if DoesCamExist(cam) then
 		SetCamActive(cam, false)
+		DestroyCam(cam,true)
 		RenderScriptCams(false, false, 0, true, true)
 	end
 	SetNuiFocus(false, false)
@@ -213,11 +220,9 @@ ShowCharacter = function(slot)
 	else
 		SendNUIMessage({showoptions = 'new', slot = slot})
 		local model = GetModel('m')
-		RequestModel(model)
-		while not HasModelLoaded(model) do Wait(0) end
+		SetModel(model)
 		SetEntityCoords(PlayerPedId(),defaultspawn.x,defaultspawn.y,defaultspawn.z)
 		SetLocalPlayerVisibleLocally(true)
-		SetPlayerModel(PlayerId(), model)
 		FreezeEntityPosition(PlayerPedId(),false)
 		Wait(10)
 		SetSkin(PlayerPedId(),Config.Default[Config.skin]['m'])
@@ -239,13 +244,8 @@ ShowCharacter = function(slot)
 		SetCamActive(cam,true)
 	end
 	local model = GetModel(chardata.sex)
-	RequestModel(model)
-	while not HasModelLoaded(model) do
-		RequestModel(model)
-		Wait(0)
-	end
+	SetModel(model)
 	SetLocalPlayerVisibleLocally(true)
-	SetPlayerModel(PlayerId(), model)
 	Wait(1)
 	FreezeEntityPosition(PlayerPedId(),false)
 	SetEntityCoordsNoOffset(PlayerPedId(),chardata.position.x,chardata.position.y,chardata.position.z+0.1,true, false, false, false)
@@ -398,13 +398,7 @@ RegisterNetEvent('esx:playerLoaded', function(playerData, isNew, skin)
 		finished = false
 
 		local model = GetModel(playerData.sex or 'm')
-		RequestModel(model)
-		while not HasModelLoaded(model) do
-			RequestModel(model)
-			Wait(0)
-		end
-		SetPlayerModel(PlayerId(), model)
-		SetModelAsNoLongerNeeded(model)
+		SetModel(model)
 		if not Config.SpawnSelector then
 			SetupPlayer()
 		end
@@ -457,17 +451,11 @@ RegisterNUICallback('nuicb', function(data)
 		if not data.info.sex then data.info.sex = 'm' end
 		data.info.height = 100 -- is this really needed
 		chosenslot = data.slot
+		local model = GetModel(data.info.sex or 'm')
+		SetModel(model)
 		callback('renzu_multicharacter:createcharacter', {info = data.info, slot = data.slot})
 		Cleanups()
 		if Config.framework == 'QBCORE' and GetResourceState('qb-spawn') ~= 'started' then
-			local model = GetModel(data.info.sex or 'm')
-			RequestModel(model)
-			while not HasModelLoaded(model) do
-				RequestModel(model)
-				Wait(0)
-			end
-			SetPlayerModel(PlayerId(), model)
-			SetModelAsNoLongerNeeded(model)
 			SpawnSelect(vec4(defaultspawn.x,defaultspawn.y+10,defaultspawn.z,0.0))
 			SkinMenu()
 		end
@@ -481,12 +469,7 @@ RegisterNUICallback('nuicb', function(data)
 	end
 	if data.msg == 'sex' then
 		local model = data.sex == 'm' and `mp_m_freemode_01` or `mp_f_freemode_01`
-		RequestModel(model)
-		while not HasModelLoaded(model) do
-			RequestModel(model)
-			Wait(0)
-		end
-		SetPlayerModel(PlayerId(), model)
+		SetModel(model)
 		SetSkin(PlayerPedId(),Config.Default[Config.skin][data.sex])
 		characters[tonumber(data.slot)] = {position = {x = defaultspawn.x, y = defaultspawn.y+10, z = defaultspawn.z}, new = true}
 		SetBlockingOfNonTemporaryEvents(PlayerPedId(), true)
@@ -522,15 +505,12 @@ ClearPedHeadshots = function(handle)
 end
 
 CheckStates = function()
-	DoScreenFadeOut(0)
 	local states = characters[chosenslot].extras
 	if characters[chosenslot] and characters[chosenslot].extras then
 		for name,data in pairs(states) do
 			HandleStates(name,data)
 		end
 	end
-	Wait(1000)
-	DoScreenFadeIn(1000)
 end
 
 RegisterStates = function(name,cb,spawnselector)
@@ -555,7 +535,10 @@ HandleStates = function(name,data)
 
 	-- my use case and example
 	if name == 'invehicle' and data and type(data) == 'table' then
+		DoScreenFadeOut(0)
 		local lastvehicle = callback('setplayertolastvehicle',data.net) -- this will set the player to its last vehicle
+		Wait(1000)
+		DoScreenFadeIn(1000)
 	end
 end
 
