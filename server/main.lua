@@ -19,7 +19,7 @@ registercallback('renzu_multicharacter:createcharacter', function(source,data)
 	Login(source,data.slot,data.info)
 	SetPlayerRoutingBucket(source,0)
 	logout[source] = false
-	return LoadPlayer(source)
+	return true
 end)
 
 registercallback('renzu_multicharacter:deletecharacter', function(source,slot)

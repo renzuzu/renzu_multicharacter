@@ -38,6 +38,11 @@ Config.Spawn = vector3(-1037.59,-2736.90,20.16)
 Config.Relog = true
 -------------------
 
+Config.ESXStarterItem = {
+	[1] = {item = 'bread', amount = 10},
+	[2] = {item = 'water', amount = 10},
+}
+
 -- skin menus
 -- set use to true if you want to use the skin menus
 -- do not set multiple trues on the same resource eg. skinchanger

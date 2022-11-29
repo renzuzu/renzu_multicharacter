@@ -116,6 +116,7 @@ end
 Login = function(source,data,new,qbslot)
 	if Config.framework == 'ESX' then
 		TriggerEvent('esx:onPlayerJoined', source, Config.Prefix..data, new or nil)
+		LoadPlayer(source)
 	else
 		if new then
 			new.cid = data
@@ -128,7 +129,6 @@ Login = function(source,data,new,qbslot)
 			}
 		end
 		local login = QBCore.Player.Login(source, not new and data or false, new or nil)
-		Wait(1000)
 		print('^2[qb-core]^7 '..GetPlayerName(source)..' (Citizen ID: '..data..') has succesfully loaded!')
         QBCore.Commands.Refresh(source)
 		-- this codes below should be in playerloaded event in server. but here we need this to trigger qb-spawn and to support apartment
@@ -136,6 +136,7 @@ Login = function(source,data,new,qbslot)
 		TriggerClientEvent('apartments:client:setupSpawnUI', source, {citizenid = data})
 		TriggerEvent("qb-log:server:CreateLog", "joinleave", "Loaded", "green", "**".. GetPlayerName(source) .. "** ("..(QBCore.Functions.GetIdentifier(source, 'discord') or 'undefined') .." |  ||"  ..(QBCore.Functions.GetIdentifier(source, 'ip') or 'undefined') ..  "|| | " ..(QBCore.Functions.GetIdentifier(source, 'license') or 'undefined') .." | " ..data.." | "..source..") loaded..")
 	end
+	if new then GiveStarterItems(source) end
 	return true
 end
 
@@ -191,3 +192,42 @@ end
 Command(Config.commandslot)
 
 GlobalState.PlayerStates = json.decode(GetResourceKvpString("char_status") or '[]') or {}
+
+GiveStarterItems = function(source)
+	local starter = json.decode(GetResourceKvpString("starteritems") or '[]') or {} -- anti exploit
+	Citizen.CreateThreadNow(function()
+		local src = source
+		if Config.framework == 'QBCORE' then
+			local Player = QBCore.Functions.GetPlayer(src)
+			if starter[Player.PlayerData.citizenid] then return end
+			for _, v in pairs(QBCore.Shared.StarterItems) do
+				local info = {}
+				if v.item == "id_card" then
+					info.citizenid = Player.PlayerData.citizenid
+					info.firstname = Player.PlayerData.charinfo.firstname
+					info.lastname = Player.PlayerData.charinfo.lastname
+					info.birthdate = Player.PlayerData.charinfo.birthdate
+					info.gender = Player.PlayerData.charinfo.gender
+					info.nationality = Player.PlayerData.charinfo.nationality
+				elseif v.item == "driver_license" then
+					info.firstname = Player.PlayerData.charinfo.firstname
+					info.lastname = Player.PlayerData.charinfo.lastname
+					info.birthdate = Player.PlayerData.charinfo.birthdate
+					info.type = "Class C Driver License"
+				end
+				Player.Functions.AddItem(v.item, v.amount, false, info)
+			end
+			starter[Player.PlayerData.citizenid] = true -- this is something can still be exploit by players as citizenid is random string every register, so put only a real starter pack like phone and etc.
+
+		else
+			local xPlayer = ESX.GetPlayerFromId(src)
+			if starter[xPlayer.identifier] then return end
+			for _, v in pairs(Config.ESXStarterItem) do
+				xPlayer.addInventoryItem(v.item,v.amount)
+			end
+			starter[xPlayer.identifier] = true
+		end
+		SetResourceKvp('starteritems',json.encode(starter))
+	end)
+	Wait(2000)
+end
