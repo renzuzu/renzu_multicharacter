@@ -114,7 +114,7 @@ CreatePedHeadShots = function(characters)
 				local handle = handle
 				ClearPedHeadshots(handle)
 			end)
-		else
+		elseif not pedshots then
 			SendNUIMessage({pedshots = 'default', slot = slot, default = true})
 		end
 	end
