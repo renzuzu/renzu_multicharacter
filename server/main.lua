@@ -44,7 +44,7 @@ RegisterNetEvent('esx_multicharacter:relog', function()
 	 if QBCore then
 		QBCore.Player.Logout(src)
 	 end
-	 logout[source] = true
+	 logout[src] = true
 end)
 
 RegisterNetEvent("playerDropped",function()
