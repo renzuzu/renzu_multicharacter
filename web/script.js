@@ -72,8 +72,8 @@ window.addEventListener('message', function (table) {
         getEl('logocontainer').style.display = 'inline-block'
     } else if (event.showlogo == false) {
         getEl('logocontainer').style.display = 'inline-block'
-        getEl('logocontainer').style.width = '50%'
-        getEl('logocontainer').style.right = '5%'
+        getEl('logocontainer').style.width = '45vh'
+        getEl('logocontainer').style.right = '15%'
         getEl('logocontainer').style.top = '35%'
     }
     if (event.characters) {  
@@ -174,6 +174,7 @@ function chooseslot() {
 function confirm(show) {
     if (show) {
         getEl('confirm').style.display = 'block'
+        SendData({msg: 'deleteattempt'})
     } else {
         getEl('confirm').style.display = 'none'
     }
