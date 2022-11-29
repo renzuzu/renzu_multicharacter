@@ -18,17 +18,6 @@ Fivem - ESX &amp; QBCORE Multicharacters
 - Support Starter items
 - Player States on UI
 
-# Dependency
-- ESX or QBCORE
-- skinchanger or fivemappearance or qb-clothing
-- xsound or renzu_mp3 (for bg intro) (OPTIONAL)
-- renzu_spawn - for spawn selector (OPTIONAL)
-
-# compatibilites
-- this supports qb-spawn ( you need to disable spawnselector in config ) - by default qbcore is setup this way. so you can have your spawn in aparment, housing etc.. (temporary until i release my housing with apartments)
-- esx_kashacters identifier logic - this dont support the old multicharacter logic. its only support if your esx legacy is using char as prefix for multicharacters
-- Skins - this supports the skinchanger so this probably supports CUI characters too. since its a revamped skinchanger with creator ui.
-
 # Commands
 - /relog (logout)
 - /updatecharslots (update the total of slots) ex. /updatecharslots ID 10
@@ -68,7 +57,7 @@ exports.renzu_multicharacter:RegisterStates('invehicle', function()
  		print(value)
  		LocalPlayer.state:set('invehicle',value and {net = NetworkGetNetworkIdFromEntity(value) or false},true)
  	end)
-end,false)
+end,false) -- set spawn selector true or false
 ```
 - and once the player accidentaly logout, once the player login again, they will automatically spawn on the vehicle even if its moving.
 - there could be more use case. like if player is in jail or hospital, community service you could potentially disable spawn selector for ex.
@@ -118,3 +107,15 @@ ALTER TABLE `users`
 
 # qbcore sql 
 - if you are recently using qb-multicharacters there should be no sql missing
+
+
+# Dependency
+- ESX or QBCORE
+- skinchanger or fivemappearance or qb-clothing
+- xsound or renzu_mp3 (for bg intro) (OPTIONAL)
+- renzu_spawn - for spawn selector (OPTIONAL)
+
+# compatibilites
+- this supports qb-spawn ( you need to disable spawnselector in config ) - by default qbcore is setup this way. so you can have your spawn in aparment, housing etc.. (temporary until i release my housing with apartments)
+- esx_kashacters identifier logic - this dont support the old multicharacter logic. its only support if your esx legacy is using char as prefix for multicharacters
+- skinchanger repos - this supports the skinchanger so this probably supports CUI characters too. since its a revamped skinchanger with creator ui.
