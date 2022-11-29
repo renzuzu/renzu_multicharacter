@@ -15,6 +15,8 @@ Fivem - ESX &amp; QBCORE Multicharacters
 - Supports Latest skinchanger & fivemappearance or qb-clothing
 - Supports /relog command (logout)
 - Supports Updating Slots number via config or commands. there is no maximum number but 10-20 is good.
+- Support Starter items
+- Player States on UI
 
 # Dependency
 - ESX or QBCORE
@@ -26,3 +28,48 @@ Fivem - ESX &amp; QBCORE Multicharacters
 - this supports qb-spawn ( you need to disable spawnselector in config ) - by default qbcore is setup this way. so you can have your spawn in aparment, housing etc.. (temporary until i release my housing with apartments)
 - esx_kashacters identifier logic - this dont support the old multicharacter logic. its only support if your esx legacy is using char as prefix for multicharacters
 - Skins - this supports the skinchanger so this probably supports CUI characters too. since its a revamped skinchanger with creator ui.
+
+# Commands
+- /relog (logout)
+- /updatecharslots (update the total of slots) ex. /updatecharslots ID 10
+
+# Skin Resource
+- Support skinchanger, fivemappearance, qb-clothing
+```
+Config.skin = 'skinchanger' -- skinchanger , fivemappearance, qb-clothing
+```
+# Skin Menus / Character Creator Support
+- we include multiple resource for each skin resource and you can add more if yours is missing.
+```
+Config.SkinMenus = {
+	['skinchanger'] = {
+		['esx_skin'] = {event = 'esx_skin:openSaveableMenu', use = true},
+		['VexCreator'] = {event = 'VexCreator:loadCreator', use = false},
+		['cui_character'] = {event = 'cui_character:open', use = false},
+		['example_resource'] = {exports = 'exports.example:Creator', event = nil, use = false}, -- example support exports
+	},
+	['fivemappearance'] = {}, -- is there any creator uses fivemappearance? i will leave this todo for now
+	['qb-clothing'] = {
+		['qb-clothing'] = { event = 'qb-clothing:client:openMenu', use = true},
+	},
+}
+```
+
+# Player States in UI
+![image](https://user-images.githubusercontent.com/82306584/204421392-1f1df56b-60c2-483c-ba14-a5c7bd802f92.png)
+- this shows the current state of player if its set manually. (ex. shows if player is dead)
+- callbacks are triggered once player has been login.
+- sample use case: register state if player is in vehicle
+```
+exports.renzu_multicharacter:RegisterStates('invehicle', function()
+ 	if not lib then return end -- ox_lib
+ 	print('registered')
+ 	lib.onCache('vehicle', function(value)
+ 		print(value)
+ 		LocalPlayer.state:set('invehicle',value and {net = NetworkGetNetworkIdFromEntity(value) or false},true)
+ 	end)
+end,false)
+```
+- and once the player accidentaly logout, once the player login again, they will automatically spawn on the vehicle even if its moving.
+- there could be more use case. like if player is in jail or hospital, community service you could potentially disable spawn selector for ex.
+- more use case is if player is in apartment or housing. you could preload the house while the player is respawning.
