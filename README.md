@@ -99,3 +99,22 @@ Config.skin = 'skinchanger' -- skinchanger , fivemappearance, qb-clothing
 - stop esx_identity or keep it
 - stop qb-multicharacters
 - stop qb-spawn if your are going to use my spawn resource. renzu_spawn
+
+# esx sql column dependencies
+- make sure you have this skin column from users @ esx_skin sql
+``` 
+ALTER TABLE `users` ADD COLUMN `skin` LONGTEXT NULL DEFAULT NULL;
+```
+- make sure you have this column from users @ esx_identity sql
+```
+ALTER TABLE `users`
+	ADD COLUMN `firstname` VARCHAR(16) NULL DEFAULT NULL,
+	ADD COLUMN `lastname` VARCHAR(16) NULL DEFAULT NULL,
+	ADD COLUMN `dateofbirth` VARCHAR(10) NULL DEFAULT NULL,
+	ADD COLUMN `sex` VARCHAR(1) NULL DEFAULT NULL,
+	ADD COLUMN `height` INT NULL DEFAULT NULL
+;
+```
+
+# qbcore sql 
+- if you are recently using qb-multicharacters there should be no sql missing
