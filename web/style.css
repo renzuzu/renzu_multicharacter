@@ -26,7 +26,7 @@ header {
   display: grid;
   color:#fff;
   position: absolute;
-  top: 2%;
+  top: 5%;
   left: 5%;
   align-items: center;
   z-index: 1;
@@ -373,8 +373,8 @@ input[type=radio] {
   z-index: 99;
   position: absolute;
   right: 1%;
-  width: 80px;
-  bottom: 39%;
+  width: 100%;
+  top: 8%;
 }
 
 #option {
@@ -427,6 +427,7 @@ input[type=radio] {
   /* overflow: hidden; */
   /* background: #252a32; */
   padding: 10px;
+  padding-top: 25px;
 }
 
 #minilogo {
