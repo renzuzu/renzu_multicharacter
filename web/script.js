@@ -13,8 +13,8 @@
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send(JSON.stringify(data))
 }
-
 let getEl = function( id ) { return document.getElementById( id )}
+let myForm = getEl('registerf')
 let chosenslot = 1
 let characters = {}
 
@@ -87,7 +87,9 @@ window.addEventListener('message', function (table) {
         characters = chars
         for (var i = 0; i < event.slots; i++) {
             if (!chars[i]) {
-                chars[i] = 'EMPTY SLOT'
+                chars[i] = {name : 'EMPTY SLOT'}
+            } else if (chars[i] && chars[i].name == undefined) {
+                chars[i] = {name : 'EMPTY SLOT'}
             }
         }
         for (const i in chars) {
@@ -96,8 +98,8 @@ window.addEventListener('message', function (table) {
             <div class="char__data"  onclick="showchar('${index}')">
                 <img src="${pedshots[index]}" alt="" class="char__img" onerror="this.src='/web/ped.jpg';">
                 <div id="playerinfo">
-                <h1 class="char__name">${chars[index].name ? chars[index].name : 'Empty Slot'}</h1>
-                <span class="char__profession">${chars[index].job ? chars[index].job : ''}</span>
+                <h1 class="char__name">${chars[index]?.name ? chars[index].name : 'Empty Slot'}</h1>
+                <span class="char__profession">${chars[index]?.job ? chars[index].job : ''}</span>
                 </div>
             </div>
 
@@ -105,7 +107,7 @@ window.addEventListener('message', function (table) {
             </div>
             </div>`
             getEl('characters').insertAdjacentHTML("beforeend", ui)
-            for (const ex in chars[index].extras || {}) {
+            for (const ex in chars[index]?.extras || {}) {
                 if (chars[index].extras[ex]) {
                     let ui = `<a href="#" class="char__extras with-tooltip" data-tooltip-content="${ex}">${event.extras[ex]}</a>`
                     getEl(`extras_${i}`).insertAdjacentHTML("beforeend", ui)
@@ -194,11 +196,11 @@ function deletechar() {
 function showchar(slot) {
     slot = +slot + 1
     chosenslot = slot
+    myForm.reset()
     return SendData({msg: 'showchar', slot : chosenslot})
 }
 
 function register() {
-    let myForm = getEl('registerf')
     let formData = new FormData(myForm);
     let gag = Object.fromEntries(formData)
     getEl('body').style.display = 'none'
