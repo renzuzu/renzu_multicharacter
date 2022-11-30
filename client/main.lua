@@ -409,7 +409,6 @@ RegisterNetEvent('esx:playerLoaded', function(playerData, isNew, skin)
 			characters[chosenslot].position = {x = coord.x, y = coord.y, z = coord.z, heading = GetEntityHeading(PlayerPedId())}
 		end
 		finished = false
-
 		local model = GetModel(playerData.sex or 'm')
 		SetModel(model)
 		if not Config.SpawnSelector then
@@ -484,7 +483,9 @@ RegisterNUICallback('nuicb', function(data)
 	if data.msg == 'sex' then
 		local model = data.sex == 'm' and `mp_m_freemode_01` or `mp_f_freemode_01`
 		SetModel(model)
-		SetSkin(PlayerPedId(),Config.Default[Config.skin][data.sex])
+		skin = Config.Default[Config.skin][data.sex]
+		skin.sex = data.sex == 'm' and 0 or 1
+		SetSkin(PlayerPedId(),skin)
 		characters[tonumber(data.slot)] = {position = {x = defaultspawn.x, y = defaultspawn.y+10, z = defaultspawn.z}, new = true}
 		SetBlockingOfNonTemporaryEvents(PlayerPedId(), true)
 	end
