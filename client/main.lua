@@ -82,6 +82,7 @@ WeatherTransition = function()
 			Wait(0)
 		end
 		SetWeatherTypeNowPersist('CLEAR') -- initial set weather
+		SetWeatherTypeTransition(`NEUTRAL`,`CLEAR`,0.7)
 	end)
 end
 
