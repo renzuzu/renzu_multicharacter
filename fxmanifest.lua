@@ -26,3 +26,9 @@ files {
 	'web/loading.gif',
 	'web/ped.jpg',
 }
+
+dependencies {
+	'/server:5848',
+	'/onesync',
+	'oxmysql',
+}
