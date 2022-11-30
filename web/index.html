@@ -1,6 +1,6 @@
 <html lang="en"><head>
   <meta charset="UTF-8">
-  <title>renzu_multicharacter</title>
+  <title>renzu_multicharacter</title> 
   <script src="https://kit.fontawesome.com/e2ac9cc532.js" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="style.css" id="css_default">
@@ -13,11 +13,11 @@
 <div id='loading'><img src="/web/loading.gif" style="width: 5%;"></div>
 
 <div class="Modal" style="display: none;" id="confirm">
-  <h2 class="Modal-InText">
+  <h2 class="Modal-InText" id="candelete">
     Do you want to delete slot ?
   </h2>
-  <button class="Modal-InBtn Btn-Right" onclick="deletechar()">Confirm </button>
-  <button class="Modal-InBtn Btn-Left" onclick="confirm(false)">Close</button>
+  <button class="Modal-InBtn Btn-Right" id="deletebutton" onclick="deletechar()">Confirm </button>
+  <button class="Modal-InBtn Btn-Left" id="deletecancel" onclick="confirm(false)">Close</button>
 </div>
 
 <section class="area-sign-in" style="display: none;" id="register">

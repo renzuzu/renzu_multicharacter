@@ -23,7 +23,7 @@ registercallback('renzu_multicharacter:createcharacter', function(source,data)
 end)
 
 registercallback('renzu_multicharacter:deletecharacter', function(source,slot)
-	return DeleteCharacter(source,slot)
+	return Config.CanDelete and DeleteCharacter(source,slot)
 end)
 
 registercallback('renzu_multicharacter:saveappearance', function(source,skin)

@@ -124,7 +124,7 @@ IntroCam = function()
 	chosen = false
 	loaded = false
 	SendNUIMessage({fade = true})
-	SendNUIMessage({showui = true})
+	SendNUIMessage({showui = true, delete = Config.CanDelete})
 	local data = callback('getcharacters')
 	slots = data.slots
 	characters = data.characters

@@ -61,6 +61,12 @@ window.addEventListener('message', function (table) {
         getEl('logocontainer').style.right = 'auto'
         getEl('register').style.display = 'none'
     }
+    if (event.delete == false) {
+        getEl('deletebutton').style.display = 'none'
+        getEl('deletecancel').style.transform = 'translate(0, 50px)'
+        getEl('confirm').style.textAlign = 'center'
+        getEl('candelete').innerHTML = 'Player cannot delete characters. Contact administrator'
+    }
     if (event.show == true) {
         getEl('multi').style.display = 'grid'
     } else if (event.show == false) {
