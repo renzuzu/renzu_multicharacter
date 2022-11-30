@@ -45,7 +45,7 @@ Config.SkinMenus = {
 ```
 
 # #️⃣ Player States in UI
-![image](https://user-images.githubusercontent.com/82306584/204421392-1f1df56b-60c2-483c-ba14-a5c7bd802f92.png)
+![image](https://user-images.githubusercontent.com/82306584/204690922-e62e1043-62c1-4393-a918-43131e0a75f2.png)
 
 [details="States Information"]
 - this shows the current state of player if its set manually. (ex. shows if player is dead)
