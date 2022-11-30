@@ -75,7 +75,7 @@ img {
   /* background: radial-gradient(circle, rgb(67 70 74) 0%, rgb(23 23 24) 86%); */
   border-radius: 5px;
   /* background: rgb(24,26,27); */
-  background: linear-gradient(0deg, rgb(19 20 24) 0%, rgb(13 16 20) 23%, rgb(17 19 24) 45%, rgb(9 12 16) 57%, rgb(19 20 24) 72%);
+  background: linear-gradient(0deg, rgb(25 26 28) 0%, rgb(20 22 24) 23%, rgb(24 25 28) 45%, rgb(25 26 28) 57%, rgb(32 33 40) 72%);
 }
 .char__card, .char__data {
   display: flex;
@@ -102,8 +102,9 @@ img {
   height: 77px;
   border-radius: 1em;
   margin-right: 1rem;
-  border-style: outset;
-  border-color: #546176;
+  border-style: solid;
+  border-color: #535a66;
+
 }
 .char__name {
   font-size: var(--normal-font-size);
