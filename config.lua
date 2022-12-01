@@ -3,7 +3,7 @@ Config.Locale = 'en'
 Config.framework = 'ESX' -- ESX or QBCORE
 
 -- if using qbcore use qb-clothing or fivemappearance. 
-Config.skin = 'skinchanger' -- skinchanger , fivemappearance, qb-clothing
+Config.skin = 'fivemappearance' -- skinchanger , fivemappearance, qb-clothing
 -- skin resource
 
 -- SPAWN resource
@@ -87,6 +87,10 @@ Config.SkinMenus = {
 	['qb-clothing'] = {
 		['qb-clothing'] = { event = 'qb-clothing:client:openMenu', use = true},
 	},
+}
+-- compatibility with IlleniumStudios version of fivemappearance for qbcore
+Config.fivemappearanceConfig = {
+	ped = true, headBlend = true, faceFeatures = false, headOverlays = false, components = true, componentConfig = { masks = true, upperBody = true, lowerBody = true, bags = true, shoes = true, scarfAndChains = true, bodyArmor = true, shirts = true, decals = true, jackets = true }, props = true, propConfig = { hats = true, glasses = true, ear = true, watches = true, bracelets = true }, tattoos = true, enableExit = true,
 }
 
 --- do not edit

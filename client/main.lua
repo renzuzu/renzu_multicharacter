@@ -360,7 +360,7 @@ SkinMenu = function()
 			end
 		end)
 	elseif Config.skin == 'fivemappearance' then
-		local config = {ped = true,headBlend = true,faceFeatures = true,headOverlays = true,components = true,props = true,tattoos = true}
+		local config = Config.fivemappearanceConfig
 		local playerPed = PlayerPedId()
 		SetPedAoBlobRendering(playerPed, true)
 		ResetEntityAlpha(playerPed)
