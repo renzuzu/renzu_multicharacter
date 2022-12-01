@@ -31,7 +31,7 @@ Citizen.CreateThread(function ()
 			SendNUIMessage({fade = true})
 			if xSound then
 				Citizen.CreateThreadNow(function ()
-					xSound:PlayUrl('intro', 'https://www.youtube.com/watch?v=41cqwo504hA', 0.5, false, options)
+					xSound:PlayUrl('intro', Config.IntroURL, 0.5, false, options)
 				end)
 			end
 			CharacterSelect()
