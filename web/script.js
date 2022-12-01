@@ -206,7 +206,6 @@ function register() {
     let login = true
     for (const i in data) {
         if(data[i] == '') {
-            console.log('empty ',i)
             login = false
             getEl(i).style.borderColor = 'red'
             getEl(i).style.borderStyle = 'outset'

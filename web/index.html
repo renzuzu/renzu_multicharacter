@@ -25,7 +25,8 @@
       <form id="registerf">
           <input type="text" placeholder="First name" name="firstname" id="firstname"  required>
           <input type="text" placeholder="Last name" name="lastname" id="lastname" required>
-          <div class="form-item">
+          <input type="text" placeholder="Gender" name="sex" hidden>
+          <div class="form-item" id="sex">
             <div class="form-gender">
                     <label class="gender" onclick="sex('m')">
                       <input type="radio" name="sex" value = 'm'>
@@ -41,9 +42,9 @@
                     </label>
               </div>
             </div>
-          <input type="date" id="birthday" name="dateofbirth">
+          <input type="date" id="dateofbirth" name="dateofbirth">
           <br>
-          <textarea id="freeform" name="freeform" rows="4" cols="50" placeholder="Tell About Your Hobbies:" style="background-color:#252a34; border-radius: 9px;"></textarea>
+          <textarea id="freeform" name="freeform" rows="4" cols="50" placeholder="Background story:" style="height:50px;background-color:#252a34; border-radius: 9px; text-align: center;padding-top:10px;color:fefefe;"></textarea>
           <input type="submit" value="enter" onclick="event.preventDefault(); register()" />
   </div>
 </form>
