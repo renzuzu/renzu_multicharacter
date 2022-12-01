@@ -366,12 +366,12 @@ SkinMenu = function()
 		ResetEntityAlpha(playerPed)
 		SetEntityVisible(playerPed,true)
 		exports['fivem-appearance']:startPlayerCustomization(function (appearance)
-		if (appearance) then
-			if not characters[chosenslot] then characters[chosenslot] = {} end
-			characters[chosenslot].skin = appearance
-			local save = callback('renzu_multicharacter:saveappearance', appearance)
-			finished = true
-		end
+			if (appearance) then
+				if not characters[chosenslot] then characters[chosenslot] = {} end
+				characters[chosenslot].skin = appearance
+				local save = callback('renzu_multicharacter:saveappearance', appearance)
+				finished = true
+			end
 		end, config)
 	elseif Config.skin == 'qb-clothing' then
 		if Config.SkinMenu[Config.skin].event then
@@ -469,6 +469,9 @@ RegisterNUICallback('nuicb', function(data)
 		SetModel(model)
 		callback('renzu_multicharacter:createcharacter', {info = data.info, slot = data.slot})
 		Cleanups()
+		skin = Config.Default[Config.skin][data.info.sex]
+		skin.sex = data.info.sex == 'm' and 0 or 1
+		SetSkin(PlayerPedId(),skin)
 		if Config.framework == 'QBCORE' and GetResourceState('qb-spawn') ~= 'started' then
 			SpawnSelect(vec4(defaultspawn.x,defaultspawn.y+10,defaultspawn.z,0.0))
 			SkinMenu()
