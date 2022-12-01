@@ -412,6 +412,9 @@ RegisterNetEvent('esx:playerLoaded', function(playerData, isNew, skin)
 		finished = false
 		local model = GetModel(playerData.sex or 'm')
 		SetModel(model)
+		skin = Config.Default[Config.skin][playerData.sex]
+		skin.sex = playerData.sex == 'm' and 0 or 1
+		SetSkin(PlayerPedId(),skin)
 		if not Config.SpawnSelector then
 			SetupPlayer()
 		end
