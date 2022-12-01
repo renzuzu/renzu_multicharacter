@@ -152,7 +152,7 @@ SaveSkin = function(source,skin) -- only used on fivemappearance character creat
 				MySQL.insert('INSERT INTO playerskins (citizenid, model, skin, active) VALUES (?, ?, ?, ?)', {
 					Player.PlayerData.citizenid,
 					skin.model,
-					skin,
+					json.encode(skin),
 					1
 				})
 			end)
