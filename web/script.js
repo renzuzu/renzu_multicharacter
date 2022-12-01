@@ -202,10 +202,25 @@ function showchar(slot) {
 
 function register() {
     let formData = new FormData(myForm);
-    let gag = Object.fromEntries(formData)
-    getEl('body').style.display = 'none'
-    myForm.reset()
-    return SendData({msg: 'create', info : gag, slot: chosenslot})
+    let data = Object.fromEntries(formData)
+    let login = true
+    for (const i in data) {
+        if(data[i] == '') {
+            console.log('empty ',i)
+            login = false
+            getEl(i).style.borderColor = 'red'
+            getEl(i).style.borderStyle = 'outset'
+            setTimeout(() => {
+                getEl(i).style.borderColor = 'unset'
+                getEl(i).style.borderStyle = 'unset'
+            }, 2000)
+        }
+    }
+    if (login) {
+        getEl('body').style.display = 'none'
+        myForm.reset()
+        return SendData({msg: 'create', info : data, slot: chosenslot})
+    }
 }
 
 function sex(str) {
