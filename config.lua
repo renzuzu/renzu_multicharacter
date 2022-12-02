@@ -3,7 +3,7 @@ Config.Locale = 'en'
 Config.framework = 'ESX' -- ESX or QBCORE
 
 -- if using qbcore use qb-clothing or fivemappearance. 
-Config.skin = 'fivemappearance' -- skinchanger , fivemappearance, qb-clothing
+Config.skin = 'skinchanger' -- skinchanger , fivemappearance, qb-clothing
 -- skin resource
 
 -- SPAWN resource
