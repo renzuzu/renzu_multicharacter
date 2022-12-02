@@ -78,7 +78,6 @@ WeatherTransition = function()
 						time = 23
 				end
 			end
-			DisplayRadar(false)
 			Wait(0)
 		end
 		SetWeatherTypeNowPersist('CLEAR') -- initial set weather
@@ -171,7 +170,6 @@ local chosenslot = 1
 
 CharacterSelect = function()
 	local ped = PlayerPedId()
-	DisplayRadar(0)
 	--SetEntityCoords(ped, 0.0,0.0,1000.0)
 	TriggerEvent('esx:loadingScreenOff')
 	ShutdownLoadingScreen()
