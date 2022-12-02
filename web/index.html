@@ -1,73 +1,78 @@
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>renzu_multicharacter</title>
-        <script src="https://kit.fontawesome.com/e2ac9cc532.js" crossorigin="anonymous"></script>
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-        <link rel="stylesheet" href="style.css" id="css_default">
-    </head>
-    <body translate="no" id="body">
-        <div id="logocontainer">
-            <img id="logo" src="/web/logo.png">
+<html lang="en"><head>
+  <meta charset="UTF-8">
+  <title>renzu_multicharacter</title> 
+  <script src="https://kit.fontawesome.com/e2ac9cc532.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="style.css" id="css_default">
+</head>
+
+<body translate="no" id="body">
+  <div id="logocontainer">
+    <img id="logo" src="/web/logo.png">
+</div>
+<div id='loading'><img src="/web/loading.gif" style="width: 5%;"></div>
+
+<div class="Modal" style="display: none;" id="confirm">
+  <h2 class="Modal-InText" id="candelete">
+    Do you want to delete slot ?
+  </h2>
+  <button class="Modal-InBtn Btn-Right" id="deletebutton" onclick="deletechar()">Confirm </button>
+  <button class="Modal-InBtn Btn-Left" id="deletecancel" onclick="confirm(false)">Close</button>
+</div>
+
+<section class="area-sign-in" style="display: none;" id="register">
+  <div class="sign-in">
+      <form id="registerf">
+          <input type="text" placeholder="First name" name="firstname" id="firstname"  required>
+          <input type="text" placeholder="Last name" name="lastname" id="lastname" required>
+          <input type="text" placeholder="Gender" name="sex" hidden>
+          <div class="form-item" id="sex">
+            <div class="form-gender">
+                    <label class="gender" onclick="sex('m')">
+                      <input type="radio" name="sex" value = 'm'>
+                      <span class="male">Male</span>
+                    </label>
+                    <label class="gender" onclick="sex('f')">
+                      <input type="radio" name="sex" value='f'>
+                      <span class="female">Female</span>
+                    </label>
+                    <label class="gender" onclick="sex('m')">
+                      <input type="radio" name="sex" value ='m'>
+                      <span class="other">Other</span>
+                    </label>
+              </div>
+            </div>
+          <input type="date" id="dateofbirth" name="dateofbirth">
+          <br>
+          <textarea id="freeform" name="freeform" rows="4" cols="50" placeholder="Background story:" style="height:50px;background-color:#252a34; border-radius: 9px; text-align: center;padding-top:10px;color:fefefe;"></textarea>
+          <input type="submit" value="enter" onclick="event.preventDefault(); register()" />
+  </div>
+</form>
+</section>
+
+  <div class="char" id="multi" style="display:none;">
+    <div class="char__container">
+      <div class="char__list">
+        <header>
+          <img id="minilogo" src="https://forum.cfx.re/uploads/default/original/4X/f/7/b/f7bd789d9d3ad55ff91dc57979e485e99e1a5273.png"><h1 id="mychar">My Characters</h1>
+        </header>
+        <div id="characters"></div>
+      </div>
+    </div>
+
+    <div id="option">
+    <button onclick="chooseslot()" id="login"> Create </button>
+    <button onclick="confirm(true)" id="delete"> Delete </button>
+    </div>
+
+    <div id="charinfo" style="position: absolute;display: none;top: 30%;right: 5%;">
+      <div class="char__card" style="display: flex;flex-direction: column!important;">
+        <div class="char__data" style="display: flex;flex-direction: column!important;padding: 15px;">
+          <h1 style="font-size: 1.2em;"><i class="fas fa-user-circle" aria-hidden="true" style="font-size: 1.5em;padding-right: 5px;"></i> Character Info</h1>
+          <section id="infos"></section>
         </div>
-        <div id='loading'><img src="/web/loading.gif" style="width: 5%;"></div>
-        <div class="Modal" style="display: none;" id="confirm">
-            <h2 class="Modal-InText" id="candelete">Do you want to delete slot ?</h2>
-            <button class="Modal-InBtn Btn-Right" id="deletebutton" onclick="deletechar()">Confirm</button>
-            <button class="Modal-InBtn Btn-Left" id="deletecancel" onclick="confirm(false)">Close</button>
-        </div>
-        <section class="area-sign-in" style="display: none;" id="register">
-            <div class="sign-in">
-                <form id="registerf">
-                    <h1 style="font-size: 1.2em; text-align: center; color: aliceblue;">Create Character</h1>
-                    <input type="text" placeholder="First name" name="firstname" id="firstname"  required>
-                    <input type="text" placeholder="Last name" name="lastname" id="lastname" required>
-                    <input type="text" placeholder="Gender" name="sex" hidden>
-                    <div class="form-item" id="sex">
-                        <div class="form-gender">
-                            <label class="gender" onclick="sex('m')">
-                                <input type="radio" name="sex" value = 'm'>
-                                <span class="male">Male</span>
-                            </label>
-                            <label class="gender" onclick="sex('f')">
-                                <input type="radio" name="sex" value='f'>
-                                <span class="female">Female</span>
-                            </label>
-                            <label class="gender" onclick="sex('m')">
-                                <input type="radio" name="sex" value ='m'>
-                                <span class="other">Other</span>
-                            </label>
-                        </div>
-                    </div>
-                    <input type="date" id="dateofbirth" name="dateofbirth">
-                    <br>
-                    <textarea id="freeform" name="freeform" rows="4" cols="50" placeholder="Background story:" style="resize: none; border: none; outline: none; height:50px; background-color:#070b13; border-radius: 9px; text-align: center; padding-top:10px; color:fefefe;"></textarea>
-                    <input type="submit" value="enter" onclick="event.preventDefault(); register()"/>
-                </form>
-            </div>
-        </section>
-        <div class="char" id="multi" style="display: none;">
-            <div class="char__container">
-                <div class="char__list">
-                    <header>
-                        <img id="minilogo" src="https://forum.cfx.re/uploads/default/original/4X/f/7/b/f7bd789d9d3ad55ff91dc57979e485e99e1a5273.png"><h1 id="mychar">My Characters</h1>
-                    </header>
-                    <div id="characters"></div>
-                </div>
-            </div>
-            <div id="option">
-                <button onclick="chooseslot()" id="login">Create</button>
-                <button onclick="confirm(true)" id="delete">Delete</button>
-            </div>
-            <div id="charinfo" style="position: absolute; display: none; top: 30%; right: 5%;">
-                <div class="char__card" style="display: flex; flex-direction: column !important;">
-                    <div class="char__data" style="display: flex; flex-direction: column !important; padding: 15px;">
-                        <h1 style="font-size: 1.2em;"><i class="fas fa-user-circle" aria-hidden="true" style="font-size: 1.5em; padding-right: 5px; color: #e49c00;"></i> Character Info</h1>
-                        <section id="infos"></section>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <script src="script.js"></script>
-    </body>
-</html>
+      </div>
+    </div>
+  </div>
+<script src="script.js"></script>
+</body></html>
