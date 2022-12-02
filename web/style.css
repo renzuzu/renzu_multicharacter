@@ -385,26 +385,37 @@ input[type=radio] {
 }
 
 #login {
-  padding: 10px;
-  width: 150px;
-  background: #08080852;
-  color: #fff;
-  font-weight: 600;
-  border-color: #e3e3e3;
-  border-radius: 5px;
-  margin: 10px;
+  background-color: #181920;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
   cursor: pointer;
+  border-radius: 4px;
 }
+#login:hover {
+  background-color: #0c0d11;
+}
+
 #delete {
-  padding: 10px;
-  width: 150px;
-  background: #cf455852;
-  color: #fff;
-  font-weight: 600;
-  border-color: #dddddd;
-  border-radius: 5px;
-  margin: 10px;
+  background-color: #681818;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
   cursor: pointer;
+  border-radius: 4px;
+}
+#delete:hover {
+  background-color: #350909;
 }
 
 #loading {
