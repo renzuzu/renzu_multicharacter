@@ -24,31 +24,33 @@ GetCharacters = function(source,data,slots)
 		local license = ESX.GetIdentifier(source)
 		local id = Config.Prefix..'%:'..license
 		local data = MySQL.query.await('SELECT * FROM users WHERE identifier LIKE ?', {'%'..id..'%'})
-		for k,v in pairs(data) do
-			local job, grade = v.job or 'unemployed', tostring(v.job_grade)
-			if ESX.Jobs[job] and ESX.Jobs[job].grades then
-				if job ~= 'unemployed' then grade = ESX.Jobs[job].grades[grade] and ESX.Jobs[job].grades[grade].label or ESX.Jobs[job].grades[tonumber(grade)] and ESX.Jobs[job].grades[tonumber(grade)].label else grade = '' end
-				job = ESX.Jobs[job].label
-			end
-			local accounts = json.decode(v.accounts)
-			local id = tonumber(string.sub(v.identifier, #Config.Prefix+1, string.find(v.identifier, ':')-1))
-			local firstname = v.firstname or 'No name'
-			local lastname = v.lastname or 'No Lastname'
-			if not characters[id] then
-				characters[id] = {
-					slot = id,
-					identifier = v.identifier,
-					name = firstname..' '..lastname,
-					job = job or 'Unemployed',
-					grade = grade or 'No grade',
-					dateofbirth = v.dateofbirth or '',
-					bank = accounts.bank,
-					money = accounts.money,
-					skin = v.skin and json.decode(v.skin or '[]') or {},
-					sex = v.sex,
-					position = v.position and v.position ~= '' and json.decode(v.position) or vec3(280.03,-584.29,43.29),
-					extras = GetExtras(v.identifier,v.group)
-				}
+		if data then
+			for k,v in pairs(data) do
+				local job, grade = v.job or 'unemployed', tostring(v.job_grade)
+				if ESX.Jobs[job] and ESX.Jobs[job].grades then
+					if job ~= 'unemployed' then grade = ESX.Jobs[job].grades[grade] and ESX.Jobs[job].grades[grade].label or ESX.Jobs[job].grades[tonumber(grade)] and ESX.Jobs[job].grades[tonumber(grade)].label else grade = '' end
+					job = ESX.Jobs[job].label
+				end
+				local accounts = json.decode(v.accounts)
+				local id = tonumber(string.sub(v.identifier, #Config.Prefix+1, string.find(v.identifier, ':')-1))
+				local firstname = v.firstname or 'No name'
+				local lastname = v.lastname or 'No Lastname'
+				if not characters[id] then
+					characters[id] = {
+						slot = id,
+						identifier = v.identifier,
+						name = firstname..' '..lastname,
+						job = job or 'Unemployed',
+						grade = grade or 'No grade',
+						dateofbirth = v.dateofbirth or '',
+						bank = accounts.bank,
+						money = accounts.money,
+						skin = v.skin and json.decode(v.skin or '[]') or {},
+						sex = v.sex,
+						position = v.position and v.position ~= '' and json.decode(v.position) or vec3(280.03,-584.29,43.29),
+						extras = GetExtras(v.identifier,v.group)
+					}
+				end
 			end
 		end
 		return {characters = characters , slots = slots}
@@ -56,28 +58,30 @@ GetCharacters = function(source,data,slots)
 		local license = QBCore.Functions.GetIdentifier(source, 'license')
 		local plyChars = {}
 		local result = MySQL.query.await('SELECT * FROM players WHERE license = ?', {license})
-		for i = 1, (#result), 1 do
-			local skin = MySQL.query.await('SELECT * FROM playerskins WHERE citizenid = ? AND active = ?', { result[i].citizenid, 1 })
-			local info = json.decode(result[i].charinfo)
-			local money = json.decode(result[i].money)
-			local job = json.decode(result[i].job)
-			local firstname = info.firstname or 'No name'
-			local lastname = info.lastname or 'No Lastname'
-			characters[result[i].cid] = {
-				slot = result[i].cid,
-				name = firstname..' '..lastname,
-				job = job.label or 'Unemployed',
-				grade = job.grade.name or 'gago',
-				dateofbirth = info.birthdate or '',
-				bank = money.bank,
-				money = money.cash,
-				citizenid = result[i].citizenid,
-				identifier = result[i].citizenid,
-				skin = skin and skin[1] and json.decode(skin[1].skin) or {},
-				sex = info.gender == 0 and 'm' or 'f',
-				position = result[i].position and result[i].position ~= '' and json.decode(result[i].position) or vec3(280.03,-584.29,43.29),
-				extras = GetExtras(result[i].citizenid)
-			}
+		if result and #result > 0 then
+			for i = 1, (#result), 1 do
+				local skin = MySQL.query.await('SELECT * FROM playerskins WHERE citizenid = ? AND active = ?', { result[i].citizenid, 1 })
+				local info = json.decode(result[i].charinfo)
+				local money = json.decode(result[i].money)
+				local job = json.decode(result[i].job)
+				local firstname = info.firstname or 'No name'
+				local lastname = info.lastname or 'No Lastname'
+				characters[result[i].cid] = {
+					slot = result[i].cid,
+					name = firstname..' '..lastname,
+					job = job.label or 'Unemployed',
+					grade = job.grade.name or 'gago',
+					dateofbirth = info.birthdate or '',
+					bank = money.bank,
+					money = money.cash,
+					citizenid = result[i].citizenid,
+					identifier = result[i].citizenid,
+					skin = skin and skin[1] and json.decode(skin[1].skin) or {},
+					sex = info.gender == 0 and 'm' or 'f',
+					position = result[i].position and result[i].position ~= '' and json.decode(result[i].position) or vec3(280.03,-584.29,43.29),
+					extras = GetExtras(result[i].citizenid)
+				}
+			end
 		end
 		return {characters = characters , slots = slots}
 	end
