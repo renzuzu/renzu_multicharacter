@@ -26,7 +26,7 @@ GetCharacters = function(source,data,slots)
 		local data = MySQL.query.await('SELECT * FROM users WHERE identifier LIKE ?', {'%'..id..'%'})
 		for k,v in pairs(data) do
 			local job, grade = v.job or 'unemployed', tostring(v.job_grade)
-			if ESX.Jobs[job] then
+			if ESX.Jobs[job] and ESX.Jobs[job].grades then
 				if job ~= 'unemployed' then grade = ESX.Jobs[job].grades[grade] and ESX.Jobs[job].grades[grade].label or ESX.Jobs[job].grades[tonumber(grade)] and ESX.Jobs[job].grades[tonumber(grade)].label else grade = '' end
 				job = ESX.Jobs[job].label
 			end
@@ -44,9 +44,9 @@ GetCharacters = function(source,data,slots)
 					dateofbirth = v.dateofbirth or '',
 					bank = accounts.bank,
 					money = accounts.money,
-					skin = v.skin and json.decode(v.skin) or {},
+					skin = v.skin and json.decode(v.skin or '[]') or {},
 					sex = v.sex,
-					position = v.position and json.decode(v.position) or vec3(280.03,-584.29,43.29),
+					position = v.position and v.position ~= '' and json.decode(v.position) or vec3(280.03,-584.29,43.29),
 					extras = GetExtras(v.identifier,v.group)
 				}
 			end
@@ -61,9 +61,11 @@ GetCharacters = function(source,data,slots)
 			local info = json.decode(result[i].charinfo)
 			local money = json.decode(result[i].money)
 			local job = json.decode(result[i].job)
+			local firstname = info.firstname or 'No name'
+			local lastname = info.lastname or 'No Lastname'
 			characters[result[i].cid] = {
 				slot = result[i].cid,
-				name = info.firstname..' '..info.lastname,
+				name = firstname..' '..lastname,
 				job = job.label or 'Unemployed',
 				grade = job.grade.name or 'gago',
 				dateofbirth = info.birthdate or '',
@@ -73,7 +75,7 @@ GetCharacters = function(source,data,slots)
 				identifier = result[i].citizenid,
 				skin = skin and skin[1] and json.decode(skin[1].skin) or {},
 				sex = info.gender == 0 and 'm' or 'f',
-				position = result[i].position and json.decode(result[i].position) or vec3(280.03,-584.29,43.29),
+				position = result[i].position and result[i].position ~= '' and json.decode(result[i].position) or vec3(280.03,-584.29,43.29),
 				extras = GetExtras(result[i].citizenid)
 			}
 		end

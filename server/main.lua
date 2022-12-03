@@ -74,7 +74,7 @@ RegisterNetEvent("playerDropped",function()
 end)
 
 GetIdentifiers = function(id)
-	local license = nil
+	local license = 'licensed'
 	local numIdentifiers = GetNumPlayerIdentifiers(id)
 	for i = 0, numIdentifiers do
 		local identifier = GetPlayerIdentifier(id, i)

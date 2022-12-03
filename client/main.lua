@@ -139,7 +139,6 @@ IntroCam = function()
 	SetCamActive(cam, true)
 	RenderScriptCams(true, true, 6000, true, true)
 	SendNUIMessage({fade = false})
-	SendNUIMessage({showui = true})
 	local camloc = Config.CameraIntro
 	SendNUIMessage({showlogo = true})
 	while #(GetFinalRenderedCamCoord() - vec3(1609.6380615234,-2272.8967285156,483.33)) > 10 do Wait(111) end
