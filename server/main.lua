@@ -1,5 +1,6 @@
 local callbacks = {}
 local logout = {}
+local registered = {}
 registercallback = function(name,cb) -- create callbacks. so we wont have much convertion for other frameworks
 	callbacks[name] = cb
 end
@@ -16,9 +17,15 @@ registercallback('renzu_multicharacter:choosecharacter', function(source,slot)
 end)
 
 registercallback('renzu_multicharacter:createcharacter', function(source,data)
-	Login(source,data.slot,data.info)
-	SetPlayerRoutingBucket(source,0)
-	logout[source] = false
+	local source = source
+	local data = data
+	if Config.UseDefaultRegister then
+		Login(source,data.slot,data.info)
+		SetPlayerRoutingBucket(source,0)
+		logout[source] = false
+	else
+		registered[source] = data
+	end
 	return true
 end)
 
@@ -45,6 +52,20 @@ RegisterNetEvent('esx_multicharacter:relog', function()
 		QBCore.Player.Logout(src)
 	 end
 	 logout[src] = true
+end)
+
+RegisterNetEvent('esx_identity:completedRegistration', function(src, data)
+	if not registered[src] then return end
+	Login(src,registered[src].slot,data)
+	SetPlayerRoutingBucket(src,0)
+	logout[src] = false
+end)
+
+exports('RegisterComplete', function(src, data)
+	if not registered[src] then return end
+	Login(src,registered[src].slot,data)
+	SetPlayerRoutingBucket(src,0)
+	logout[src] = false
 end)
 
 RegisterNetEvent("playerDropped",function()

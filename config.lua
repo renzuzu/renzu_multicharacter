@@ -1,7 +1,13 @@
 Config = {}
 Config.Locale = 'en'
 Config.framework = 'ESX' -- ESX or QBCORE
+Config.UseDefaultRegister = true -- if false you will use other registration resource ex. esx_identite,
+Config.RegisterHook = {
+	event = true,
+	call = 'esx_identity:showRegisterIdentity' -- sample esx_identity compatibility. for more compatibilty see bottom.
+}
 
+-- Choose Skin Resource
 -- if using qbcore use qb-clothing or fivemappearance. 
 Config.skin = 'skinchanger' -- skinchanger , fivemappearance, qb-clothing
 -- skin resource
@@ -121,3 +127,10 @@ Config.Status = {
 	['inmlo'] = '<i class="fas fa-home"></i>',
 	['admin'] = '<i class="fas fa-crown"></i>',
 }
+
+-- Custom identity / register resource
+-- exports.renzu_multicharacter:RegisterComplete(source, {
+--     firstname = 'Firstname', lastname = 'Lastname', sex = 'm', height = 100,
+-- })
+-- you need to trigger this export from server after you complete your registration form from your registration resource.
+-- if your using esx_identity its automatically supported you dont need to trigger the export and any other resource adapted to the ESX legacy identity logic.

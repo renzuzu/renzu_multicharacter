@@ -63,7 +63,7 @@ WeatherTransition = function()
 		count = 0
 		ts = 0
 		while not loaded and not chosen do
-			SetRainFxIntensity(0.1)
+			--SetRainFxIntensity(0.1)
 			NetworkOverrideClockTime(time, 1, 0)
 			SetWeatherTypeTransition(`THUNDER`,`CLEAR`,0.7)
 			ts = ts + 1
@@ -223,7 +223,7 @@ ShowCharacter = function(slot)
 	if chardata and not chardata.new then
 		SendNUIMessage({showoptions = 'existing', slot = slot})
 	else
-		SendNUIMessage({showoptions = 'new', slot = slot})
+		SendNUIMessage({showoptions = 'new', slot = slot, customregister = not Config.UseDefaultRegister})
 		local model = GetModel('m')
 		SetModel(model)
 		SetEntityCoords(PlayerPedId(),defaultspawn.x,defaultspawn.y,defaultspawn.z)
@@ -468,6 +468,13 @@ RegisterNUICallback('nuicb', function(data)
 		chosenslot = data.slot
 		local model = GetModel(data.info.sex or 'm')
 		SetModel(model)
+		if not Config.UseDefaultRegister then
+			if Config.RegisterHook.event then
+				TriggerEvent(Config.RegisterHook.call)
+			else
+				Config.RegisterHook.call()
+			end
+		end
 		callback('renzu_multicharacter:createcharacter', {info = data.info, slot = data.slot})
 		Cleanups()
 		skin = Config.Default[Config.skin][data.info.sex]

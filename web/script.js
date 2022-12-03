@@ -123,17 +123,25 @@ window.addEventListener('message', function (table) {
         getEl('charinfo').style.display = 'unset'
         getEl('logocontainer').style.display = 'none'
         getEl('option').style.display = 'inline-block'
-
+        getEl('registercustom').style.display = 'none'
         chosenslot = event.slot
         ShowInfos()
     } else if (event.showoptions == 'new') {
         chosenslot = event.slot
-        getEl('login').innerHTML = 'Create'
-        getEl('register').style.display = 'flex'
-        getEl('delete').style.display = 'none'
-        getEl('charinfo').style.display = 'none'
-        getEl('logocontainer').style.display = 'none'
-        getEl('option').style.display = 'none'
+        if (event.customregister) {
+            getEl('delete').style.display = 'none'
+            getEl('charinfo').style.display = 'none'
+            getEl('logocontainer').style.display = 'none'
+            getEl('option').style.display = 'none'
+            getEl('registercustom').style.display = 'block'
+        } else if (event.customregister == false) {
+            getEl('login').innerHTML = 'Create'
+            getEl('register').style.display = 'flex'
+            getEl('delete').style.display = 'none'
+            getEl('charinfo').style.display = 'none'
+            getEl('logocontainer').style.display = 'none'
+            getEl('option').style.display = 'none'
+        }
     }
 })
 
@@ -220,6 +228,12 @@ function register() {
         myForm.reset()
         return SendData({msg: 'create', info : data, slot: chosenslot})
     }
+}
+
+function registercustom() {
+    getEl('body').style.display = 'none'
+    getEl('registercustom').style.display = 'none'
+    return SendData({msg: 'create', info : {sex : 'm'}, slot: chosenslot})
 }
 
 function sex(str) {
