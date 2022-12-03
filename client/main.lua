@@ -142,7 +142,7 @@ IntroCam = function()
 	local camloc = Config.CameraIntro
 	SendNUIMessage({showlogo = true})
 	while #(GetFinalRenderedCamCoord() - vec3(1609.6380615234,-2272.8967285156,483.33)) > 10 do Wait(111) end
-	SendNUIMessage({characters = characters, slots = slots, extras = Config.Status})
+	SendNUIMessage({data = {characters = characters, slots = slots, extras = Config.Status}})
 	while not chosen do
 		for k,v in ipairs(camloc) do
 			if not chosen then
@@ -220,9 +220,9 @@ ShowCharacter = function(slot)
 	SetPedAoBlobRendering(PlayerPedId(), true)
 	ResetEntityAlpha(PlayerPedId())
 	if chardata and not chardata.new then
-		SendNUIMessage({showoptions = 'existing', slot = slot})
+		SendNUIMessage({showcharacter = {showoptions = 'existing', slot = slot}})
 	else
-		SendNUIMessage({showoptions = 'new', slot = slot, customregister = not Config.UseDefaultRegister})
+		SendNUIMessage({showcharacter = {showoptions = 'new', slot = slot, customregister = not Config.UseDefaultRegister}})
 		local model = GetModel('m')
 		SetModel(model)
 		SetEntityCoords(PlayerPedId(),defaultspawn.x,defaultspawn.y,defaultspawn.z)

@@ -82,10 +82,11 @@ window.addEventListener('message', function (table) {
         getEl('logocontainer').style.right = '15%'
         getEl('logocontainer').style.top = '35%'
     }
-    if (event.characters) {  
-        let chars = event.characters
+    if (event.data) {
+        let chars = event.data?.characters || {}
         characters = chars
-        for (var i = 0; i < event.slots; i++) {
+        if (event.data.slots == undefined) { event.data.slots = 5 }
+        for (var i = 0; i < event.data.slots; i++) {
             if (!chars[i]) {
                 chars[i] = {name : 'EMPTY SLOT'}
             } else if (chars[i] && chars[i].name == undefined) {
@@ -109,31 +110,31 @@ window.addEventListener('message', function (table) {
             getEl('characters').insertAdjacentHTML("beforeend", ui)
             for (const ex in chars[index]?.extras || {}) {
                 if (chars[index].extras[ex]) {
-                    let ui = `<a href="#" class="char__extras with-tooltip" data-tooltip-content="${ex}">${event.extras[ex]}</a>`
+                    let ui = `<a href="#" class="char__extras with-tooltip" data-tooltip-content="${ex}">${event.data.extras[ex]}</a>`
                     getEl(`extras_${i}`).insertAdjacentHTML("beforeend", ui)
                 }
             }
         }
 
     }
-    if (event.showoptions == 'existing') {
+    if (event.showcharacter?.showoptions == 'existing') {
         getEl('delete').style.display = 'inline-block'
         getEl('register').style.display = 'none'
         getEl('charinfo').style.display = 'unset'
         getEl('logocontainer').style.display = 'none'
         getEl('option').style.display = 'inline-block'
         getEl('registercustom').style.display = 'none'
-        chosenslot = event.slot
+        chosenslot = event.showcharacter.slot
         ShowInfos()
-    } else if (event.showoptions == 'new') {
-        chosenslot = event.slot
-        if (event.customregister) {
+    } else if (event.showcharacter?.showoptions == 'new') {
+        chosenslot = event.showcharacter.slot
+        if (event.showcharacter.customregister) {
             getEl('delete').style.display = 'none'
             getEl('charinfo').style.display = 'none'
             getEl('logocontainer').style.display = 'none'
             getEl('option').style.display = 'none'
             getEl('registercustom').style.display = 'block'
-        } else if (event.customregister == false) {
+        } else if (event.showcharacter.customregister == false) {
             getEl('register').style.display = 'flex'
             getEl('delete').style.display = 'none'
             getEl('charinfo').style.display = 'none'
