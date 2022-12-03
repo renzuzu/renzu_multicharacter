@@ -125,9 +125,9 @@ IntroCam = function()
 	loaded = false
 	SendNUIMessage({fade = true})
 	SendNUIMessage({showui = true, delete = Config.CanDelete})
-	local data = callback('getcharacters')
-	slots = data.slots
-	characters = data.characters
+	local data = callback('getcharacters') or {slots = Config.Slots}
+	slots = data.slots or Config.Slots
+	characters = data.characters or {}
 	DoScreenFadeIn(1000)
 	SetEntityVisible(PlayerPedId(),false)
 	SetEntityCoords(PlayerPedId(), 0.0,0.0,777.0)
