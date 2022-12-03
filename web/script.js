@@ -117,7 +117,6 @@ window.addEventListener('message', function (table) {
 
     }
     if (event.showoptions == 'existing') {
-        getEl('login').innerHTML = 'Choose'
         getEl('delete').style.display = 'inline-block'
         getEl('register').style.display = 'none'
         getEl('charinfo').style.display = 'unset'
@@ -135,7 +134,6 @@ window.addEventListener('message', function (table) {
             getEl('option').style.display = 'none'
             getEl('registercustom').style.display = 'block'
         } else if (event.customregister == false) {
-            getEl('login').innerHTML = 'Create'
             getEl('register').style.display = 'flex'
             getEl('delete').style.display = 'none'
             getEl('charinfo').style.display = 'none'
