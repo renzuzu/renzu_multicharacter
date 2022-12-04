@@ -447,6 +447,14 @@ input[type=radio] {
   left: 0;
 }
 
+#selectCountry {
+  padding: 10px;
+  background: #252a34;
+  color: #cbd0f7;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
 #mychar {
   position: relative;
   right: 14%;

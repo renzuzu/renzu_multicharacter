@@ -129,9 +129,9 @@ Login = function(source,data,new,qbslot)
     		new.charinfo = {
 				firstname = new.firstname,
 				lastname = new.lastname,
-				data = new.birthdate,
+				birthdate = new.birthdate or new.dateofbirth,
 				gender = new.sex == 'm' and 0 or 1,
-				nationality = 'Alien'
+				nationality = new.nationality
 			}
 		end
 		local login = QBCore.Player.Login(source, not new and data or false, new or nil)
