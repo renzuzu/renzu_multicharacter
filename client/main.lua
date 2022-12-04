@@ -110,7 +110,6 @@ CreatePedHeadShots = function(characters)
 			
 			SetSkin(PlayerPedId(), skin)
 			SetEntityVisible(PlayerPedId(),false)
-			SetEntityAlpha(PlayerPedId(),0,true)
 			Wait(211)
 			local pedshot , handle = GetPedShot(PlayerPedId())
 			pedshots[slot] = pedshot
@@ -141,12 +140,12 @@ IntroCam = function()
 	cam = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", 1609.6380615234,-2272.8967285156,483.33, 0.00, 0.00, -10.00, 100.00, false, 0)
 	Wait(3000)
 	DoScreenFadeIn(1000)
-	SetCamActive(cam, Config.cam)
+	SetCamActive(cam, true)
 	RenderScriptCams(true, true, 6000, true, true)
 	SendNUIMessage({fade = false})
 	local camloc = Config.CameraIntro
 	SendNUIMessage({showlogo = true})
-	while Config.cam and #(GetFinalRenderedCamCoord() - vec3(1609.6380615234,-2272.8967285156,483.33)) > 10 do Wait(111) end
+	while #(GetFinalRenderedCamCoord() - vec3(1609.6380615234,-2272.8967285156,483.33)) > 10 do Wait(111) end
 	SendNUIMessage({data = {characters = characters, slots = slots, extras = Config.Status}})
 	if not Config.cam then
 		SendNUIMessage({showlogo = false})
@@ -464,7 +463,6 @@ end)
 -- NUI CALLBACKS
 RegisterNUICallback('nuicb', function(data)
 	if data.msg == 'showchar' then
-		SetEntityAlpha(PlayerPedId(),255,true)
 		ShowCharacter(data.slot)
 	end
 	if data.msg == 'chooseslot' then
@@ -478,7 +476,6 @@ RegisterNUICallback('nuicb', function(data)
 		chosenslot = data.slot
 		local model = GetModel(data.info.sex or 'm')
 		SetModel(model)
-		SetEntityAlpha(PlayerPedId(),255,true)
 		if not Config.UseDefaultRegister then
 			if Config.RegisterHook.event then
 				TriggerEvent(Config.RegisterHook.call)
