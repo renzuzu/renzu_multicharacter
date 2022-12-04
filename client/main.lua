@@ -20,11 +20,13 @@ xsound = function()
 		xSound = exports.xSound
 	end
 end
-Citizen.CreateThread(function ()
-	DoScreenFadeOut(300)
+Citizen.CreateThreadNow(function ()
+	DoScreenFadeOut(0)
+	Wait(1500)
+	SendNUIMessage({fade = true})
 	if Config.bgmusic and not pcall(xsound, res or false) then xSound = nil end
      while true do
-          Wait(0)
+          Wait(100)
           if NetworkIsSessionActive() or NetworkIsPlayerActive(PlayerId()) then
 			exports['spawnmanager']:setAutoSpawn(false)
 			Wait(1001)
@@ -102,10 +104,13 @@ CreatePedHeadShots = function(characters)
 			local skin = chardata.skin
 			skin.sex = chardata.sex == "m" and 0 or 1
 			local model = models[skin.sex] or models[0]
-			--SetEntityCoords(PlayerPedId(), chardata.position.x,chardata.position.y-10,chardata.position.z-0.5)
+			
 			SetModel(model)
-			SetFocusEntity(PlayerPedId())
+			SetEntityCoords(PlayerPedId(), 0.0,0.0,500.0)
+			
 			SetSkin(PlayerPedId(), skin)
+			SetEntityVisible(PlayerPedId(),false)
+			SetEntityAlpha(PlayerPedId(),0,true)
 			Wait(211)
 			local pedshot , handle = GetPedShot(PlayerPedId())
 			pedshots[slot] = pedshot
@@ -130,20 +135,25 @@ IntroCam = function()
 	characters = data.characters or {}
 	DoScreenFadeIn(1000)
 	SetEntityVisible(PlayerPedId(),false)
-	SetEntityCoords(PlayerPedId(), 0.0,0.0,777.0)
+	SetEntityCoords(PlayerPedId(), 0.0,0.0,677.0)
 	CreatePedHeadShots(characters)
 	WeatherTransition()
 	cam = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", 1609.6380615234,-2272.8967285156,483.33, 0.00, 0.00, -10.00, 100.00, false, 0)
 	Wait(3000)
 	DoScreenFadeIn(1000)
-	SetCamActive(cam, true)
+	SetCamActive(cam, Config.cam)
 	RenderScriptCams(true, true, 6000, true, true)
 	SendNUIMessage({fade = false})
 	local camloc = Config.CameraIntro
 	SendNUIMessage({showlogo = true})
-	while #(GetFinalRenderedCamCoord() - vec3(1609.6380615234,-2272.8967285156,483.33)) > 10 do Wait(111) end
+	while Config.cam and #(GetFinalRenderedCamCoord() - vec3(1609.6380615234,-2272.8967285156,483.33)) > 10 do Wait(111) end
 	SendNUIMessage({data = {characters = characters, slots = slots, extras = Config.Status}})
-	while not chosen do
+	if not Config.cam then
+		SendNUIMessage({showlogo = false})
+		SendNUIMessage({show = true})
+		SetNuiFocus(true,true)
+	end
+	while not chosen and Config.cam do
 		for k,v in ipairs(camloc) do
 			if not chosen then
 				SetCamParams(cam, v.coord, v.rot, 50.0, 8000, 0, 0, 2)
@@ -454,6 +464,7 @@ end)
 -- NUI CALLBACKS
 RegisterNUICallback('nuicb', function(data)
 	if data.msg == 'showchar' then
+		SetEntityAlpha(PlayerPedId(),255,true)
 		ShowCharacter(data.slot)
 	end
 	if data.msg == 'chooseslot' then
@@ -467,6 +478,7 @@ RegisterNUICallback('nuicb', function(data)
 		chosenslot = data.slot
 		local model = GetModel(data.info.sex or 'm')
 		SetModel(model)
+		SetEntityAlpha(PlayerPedId(),255,true)
 		if not Config.UseDefaultRegister then
 			if Config.RegisterHook.event then
 				TriggerEvent(Config.RegisterHook.call)

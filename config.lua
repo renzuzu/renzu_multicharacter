@@ -20,6 +20,8 @@ end
 -- intro
 Config.bgmusic = true -- play bg music on intro character select
 Config.IntroURL = 'https://www.youtube.com/watch?v=41cqwo504hA' -- bg music on intro
+Config.cam = false -- intro camera
+
 Config.CameraIntro = { -- camera locations when doing intro
 	[1] = {coord = vec3(-378.5999755859,504.25170898438,434.6608581543), rot = vec3(0.00, 0.00, 151.00)},
 	[2] = {coord = vec3(169.95536804199,-964.54614257813,64.203475952148), rot = vec3(360.00, 0.00, -30.00)},
