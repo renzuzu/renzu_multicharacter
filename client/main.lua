@@ -110,6 +110,7 @@ CreatePedHeadShots = function(characters)
 			
 			SetSkin(PlayerPedId(), skin)
 			SetEntityVisible(PlayerPedId(),false)
+			FreezeEntityPosition(PlayerPedId(), true)
 			Wait(211)
 			local pedshot , handle = GetPedShot(PlayerPedId())
 			pedshots[slot] = pedshot
@@ -177,14 +178,13 @@ local peds = {}
 local chosenslot = 1
 
 CharacterSelect = function()
-	local ped = PlayerPedId()
 	--SetEntityCoords(ped, 0.0,0.0,1000.0)
 	TriggerEvent('esx:loadingScreenOff')
 	ShutdownLoadingScreen()
 	ShutdownLoadingScreenNui()
 	ShutdownLoadingScreenNui(true)
 	RequestCollisionAtCoord(0.0,0.0,777.0)
-	FreezeEntityPosition(ped, true)
+	FreezeEntityPosition(PlayerPedId(), true)
 	DoScreenFadeOut(300)
 	IntroCam()
 	DoScreenFadeIn(300)
