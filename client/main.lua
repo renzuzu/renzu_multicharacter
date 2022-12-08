@@ -67,6 +67,11 @@ WeatherTransition = function()
 		while not loaded and not chosen do
 			--SetRainFxIntensity(0.1)
 			NetworkOverrideClockTime(time, 1, 0)
+			ThefeedHideThisFrame()
+			HideHudComponentThisFrame(11)
+			HideHudComponentThisFrame(12)
+			HideHudComponentThisFrame(21)
+			HideHudAndRadarThisFrame()
 			SetWeatherTypeTransition(`THUNDER`,`CLEAR`,0.7)
 			ts = ts + 1
 			count = count + 1
