@@ -67,6 +67,11 @@ WeatherTransition = function()
 		while not loaded and not chosen do
 			--SetRainFxIntensity(0.1)
 			NetworkOverrideClockTime(time, 1, 0)
+			ThefeedHideThisFrame()
+			HideHudComponentThisFrame(11)
+			HideHudComponentThisFrame(12)
+			HideHudComponentThisFrame(21)
+			HideHudAndRadarThisFrame()
 			SetWeatherTypeTransition(`THUNDER`,`CLEAR`,0.7)
 			ts = ts + 1
 			count = count + 1
@@ -110,6 +115,7 @@ CreatePedHeadShots = function(characters)
 			
 			SetSkin(PlayerPedId(), skin)
 			SetEntityVisible(PlayerPedId(),false)
+			FreezeEntityPosition(PlayerPedId(), true)
 			Wait(211)
 			local pedshot , handle = GetPedShot(PlayerPedId())
 			pedshots[slot] = pedshot
@@ -177,14 +183,13 @@ local peds = {}
 local chosenslot = 1
 
 CharacterSelect = function()
-	local ped = PlayerPedId()
 	--SetEntityCoords(ped, 0.0,0.0,1000.0)
 	TriggerEvent('esx:loadingScreenOff')
 	ShutdownLoadingScreen()
 	ShutdownLoadingScreenNui()
 	ShutdownLoadingScreenNui(true)
 	RequestCollisionAtCoord(0.0,0.0,777.0)
-	FreezeEntityPosition(ped, true)
+	FreezeEntityPosition(PlayerPedId(), true)
 	DoScreenFadeOut(300)
 	IntroCam()
 	DoScreenFadeIn(300)
@@ -426,35 +431,27 @@ RegisterNetEvent('esx:playerLoaded', function(playerData, isNew, skin)
 	local spawn = playerData.coords
 	skin = skin
 	logout = false
-	print("LOADED EVENT")
 	if not isNew then
 		if string.find(tostring(playerData.sex):lower(), 'mal') then playerData.sex ='m' elseif string.find(tostring(playerData.sex):lower(),'fem') then playerData.sex = 'f' end -- supports other identity logic
 		skin.sex = playerData.sex == "m" and 0 or 1
 	end
 	if isNew or not skin or #skin == 1 then
-		print('new player',isNew)
 		Cleanups()
 		SpawnSelect(vec4(defaultspawn.x,defaultspawn.y+10,defaultspawn.z,0.0))
-		print("SPAWN SELECT")
 		if Config.SpawnSelector and characters[chosenslot] then -- update ped position from selector
 			local coord = GetEntityCoords(PlayerPedId())
 			characters[chosenslot].position = {x = coord.x, y = coord.y, z = coord.z, heading = GetEntityHeading(PlayerPedId())}
 		end
 		finished = false
 		local model = GetModel(playerData.sex or 'm')
-		print(model,'aso')
 		SetModel(model)
-		print(model,'1')
-
-		skin = Config.Default[Config.skin][playerData.sex]
+		skin = Config.Default[Config.skin][playerData.sex or 'm']
 		skin.sex = playerData.sex == 'm' and 0 or 1
-		print(model,'set skin')
 
 		SetSkin(PlayerPedId(),skin)
 		if not Config.SpawnSelector then
 			SetupPlayer()
 		end
-		print('skinmenu')
 		SkinMenu()
 		Wait(100)
 		--repeat Wait(200) until finished
