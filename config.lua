@@ -9,7 +9,7 @@ Config.RegisterHook = {
 
 -- Choose Skin Resource
 -- if using qbcore use qb-clothing or fivemappearance. 
-Config.skin = 'skinchanger' -- skinchanger , fivemappearance, qb-clothing
+Config.skin = 'illeniumappearance' -- skinchanger , fivemappearance, qb-clothing, illeniumappearance
 -- skin resource
 
 -- SPAWN resource
@@ -20,7 +20,7 @@ end
 -- intro
 Config.bgmusic = true -- play bg music on intro character select
 Config.IntroURL = 'https://www.youtube.com/watch?v=41cqwo504hA' -- bg music on intro
-Config.cam = false -- intro camera
+Config.cam = true -- intro camera
 
 Config.CameraIntro = { -- camera locations when doing intro
 	[1] = {coord = vec3(-378.5999755859,504.25170898438,434.6608581543), rot = vec3(0.00, 0.00, 151.00)},
@@ -32,7 +32,7 @@ Config.CameraIntro = { -- camera locations when doing intro
 -- Allows players to delete their characters
 Config.CanDelete = true
 -- This is the default number of slots for EVERY player
-Config.Slots = 5
+Config.Slots = 1
 Config.commandslot = 'updatecharslots' -- /updatecharslots 7
 --------------------
 
@@ -47,8 +47,15 @@ Config.Relog = true
 -------------------
 
 Config.ESXStarterItem = {
-	[1] = {item = 'bread', amount = 10},
-	[2] = {item = 'water', amount = 10},
+	[1] = {item = 'pizzaslice1', amount = 20},
+	[2] = {item = 'water', amount = 20},
+	[3] = {item = 'phone', amount = 1},
+	[4] = {item = 'startercar', amount = 1},
+	[5] = {item = 'money', amount = 50000},
+	[6] = {item = 'lockpick', amount = 1},
+	[7] = {item = 'houselockpick', amount = 1},
+	[8] = {item = 'icecream1', amount = 10},
+
 }
 
 Config.Animations = {
@@ -91,6 +98,7 @@ Config.SkinMenus = {
 		['cui_character'] = {event = 'cui_character:open', use = false},
 		['example_resource'] = {exports = 'exports.example:Creator', event = nil, use = false}, -- example support exports
 	},
+	['illeniumappearance'] = {}, -- is there any creator uses fivemappearance? i will leave this todo for now
 	['fivemappearance'] = {}, -- is there any creator uses fivemappearance? i will leave this todo for now
 	['qb-clothing'] = {
 		['qb-clothing'] = { event = 'qb-clothing:client:openMenu', use = true},

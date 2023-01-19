@@ -110,7 +110,6 @@ CreatePedHeadShots = function(characters)
 			
 			SetSkin(PlayerPedId(), skin)
 			SetEntityVisible(PlayerPedId(),false)
-			SetEntityAlpha(PlayerPedId(),0,true)
 			Wait(211)
 			local pedshot , handle = GetPedShot(PlayerPedId())
 			pedshots[slot] = pedshot
@@ -141,12 +140,12 @@ IntroCam = function()
 	cam = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", 1609.6380615234,-2272.8967285156,483.33, 0.00, 0.00, -10.00, 100.00, false, 0)
 	Wait(3000)
 	DoScreenFadeIn(1000)
-	SetCamActive(cam, Config.cam)
+	SetCamActive(cam, true)
 	RenderScriptCams(true, true, 6000, true, true)
 	SendNUIMessage({fade = false})
 	local camloc = Config.CameraIntro
 	SendNUIMessage({showlogo = true})
-	while Config.cam and #(GetFinalRenderedCamCoord() - vec3(1609.6380615234,-2272.8967285156,483.33)) > 10 do Wait(111) end
+	while #(GetFinalRenderedCamCoord() - vec3(1609.6380615234,-2272.8967285156,483.33)) > 10 do Wait(111) end
 	SendNUIMessage({data = {characters = characters, slots = slots, extras = Config.Status}})
 	if not Config.cam then
 		SendNUIMessage({showlogo = false})
@@ -331,6 +330,8 @@ SetSkin = function(ped,skn)
 		TriggerEvent('skinchanger:loadSkin', skn)
 	elseif Config.skin == 'fivemappearance' then
 		exports['fivem-appearance']:setPedAppearance(PlayerPedId(), skn)
+	elseif Config.skin == 'illeniumappearance' then
+		exports['illenium-appearance']:setPedAppearance(PlayerPedId(), skn)
 	elseif Config.skin == 'qb-clothing' then
 		TriggerEvent('qb-clothing:client:loadPlayerClothing', skn, PlayerPedId())
 	end
@@ -343,6 +344,10 @@ GetModel = function(str)
 		local model = skin.sex == 0 and `mp_m_freemode_01` or `mp_f_freemode_01`
 		return model
 	elseif Config.skin == 'fivemappearance' then
+		skin.sex = str == "m" and 0 or 1
+		local model = skin.sex == 0 and `mp_m_freemode_01` or `mp_f_freemode_01`
+		return model
+	elseif Config.skin == 'illeniumappearance' then
 		skin.sex = str == "m" and 0 or 1
 		local model = skin.sex == 0 and `mp_m_freemode_01` or `mp_f_freemode_01`
 		return model
@@ -380,6 +385,20 @@ SkinMenu = function()
 				finished = true
 			end
 		end, config)
+	elseif Config.skin == 'illeniumappearance' then
+		local config = Config.fivemappearanceConfig
+		local playerPed = PlayerPedId()
+		SetPedAoBlobRendering(playerPed, true)
+		ResetEntityAlpha(playerPed)
+		SetEntityVisible(playerPed,true)
+		exports['illenium-appearance']:startPlayerCustomization(function (appearance)
+			if (appearance) then
+				if not characters[chosenslot] then characters[chosenslot] = {} end
+				characters[chosenslot].skin = appearance
+				local save = callback('renzu_multicharacter:saveappearance', appearance)
+				finished = true
+			end
+		end, config)
 	elseif Config.skin == 'qb-clothing' then
 		if Config.SkinMenu[Config.skin].event then
 			TriggerEvent(Config.SkinMenu[Config.skin].event)
@@ -394,6 +413,8 @@ LoadSkin = function()
 		TriggerEvent('skinchanger:loadSkin', characters[chosenslot].skin)
 	elseif Config.skin == 'fivemappearance' then
 		exports['fivem-appearance']:setPlayerAppearance(characters[chosenslot].skin)
+	elseif Config.skin == 'illeniumappearance' then
+		exports['illenium-appearance']:setPlayerAppearance(characters[chosenslot].skin)
 	elseif Config.skin == 'qb-clothing' then
 		TriggerEvent('qb-clothing:client:loadPlayerClothing', characters[chosenslot].skin, PlayerPedId())
 	end
@@ -405,26 +426,35 @@ RegisterNetEvent('esx:playerLoaded', function(playerData, isNew, skin)
 	local spawn = playerData.coords
 	skin = skin
 	logout = false
+	print("LOADED EVENT")
 	if not isNew then
 		if string.find(tostring(playerData.sex):lower(), 'mal') then playerData.sex ='m' elseif string.find(tostring(playerData.sex):lower(),'fem') then playerData.sex = 'f' end -- supports other identity logic
 		skin.sex = playerData.sex == "m" and 0 or 1
 	end
 	if isNew or not skin or #skin == 1 then
+		print('new player',isNew)
 		Cleanups()
 		SpawnSelect(vec4(defaultspawn.x,defaultspawn.y+10,defaultspawn.z,0.0))
+		print("SPAWN SELECT")
 		if Config.SpawnSelector and characters[chosenslot] then -- update ped position from selector
 			local coord = GetEntityCoords(PlayerPedId())
 			characters[chosenslot].position = {x = coord.x, y = coord.y, z = coord.z, heading = GetEntityHeading(PlayerPedId())}
 		end
 		finished = false
 		local model = GetModel(playerData.sex or 'm')
+		print(model,'aso')
 		SetModel(model)
+		print(model,'1')
+
 		skin = Config.Default[Config.skin][playerData.sex]
 		skin.sex = playerData.sex == 'm' and 0 or 1
+		print(model,'set skin')
+
 		SetSkin(PlayerPedId(),skin)
 		if not Config.SpawnSelector then
 			SetupPlayer()
 		end
+		print('skinmenu')
 		SkinMenu()
 		Wait(100)
 		--repeat Wait(200) until finished
@@ -464,7 +494,6 @@ end)
 -- NUI CALLBACKS
 RegisterNUICallback('nuicb', function(data)
 	if data.msg == 'showchar' then
-		SetEntityAlpha(PlayerPedId(),255,true)
 		ShowCharacter(data.slot)
 	end
 	if data.msg == 'chooseslot' then
@@ -478,7 +507,6 @@ RegisterNUICallback('nuicb', function(data)
 		chosenslot = data.slot
 		local model = GetModel(data.info.sex or 'm')
 		SetModel(model)
-		SetEntityAlpha(PlayerPedId(),255,true)
 		if not Config.UseDefaultRegister then
 			if Config.RegisterHook.event then
 				TriggerEvent(Config.RegisterHook.call)
