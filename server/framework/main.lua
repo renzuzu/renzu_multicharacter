@@ -174,7 +174,7 @@ GetExtras = function(id,group)
 	return status[id] or {}
 end
 
-UpdateSlot = function(id,slot)
+UpdateSlot = function(src,id,slot)
 	local slots = json.decode(GetResourceKvpString("char_slots") or '[]') or {}
 	local license = GetIdentifiers(id)
 	if license == nil then return end
