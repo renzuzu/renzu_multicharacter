@@ -86,6 +86,7 @@ WeatherTransition = function()
 				end
 			end
 			Wait(0)
+			if not IsEntityPositionFrozen(PlayerPedId()) then FreezeEntityPosition(PlayerPedId(),true) end
 		end
 		SetWeatherTypeNowPersist('CLEAR') -- initial set weather
 		SetWeatherTypeTransition(`NEUTRAL`,`CLEAR`,0.7)
@@ -428,6 +429,7 @@ end
 
 -- HANDLE PLAYER LOADED
 RegisterNetEvent('esx:playerLoaded', function(playerData, isNew, skin)
+	loaded = true
 	local spawn = playerData.coords
 	skin = skin
 	logout = false
