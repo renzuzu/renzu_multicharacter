@@ -78,7 +78,7 @@ GetIdentifiers = function(id)
 	local numIdentifiers = GetNumPlayerIdentifiers(id)
 	for i = 0, numIdentifiers do
 		local identifier = GetPlayerIdentifier(id, i)
-        if string.find(GetPlayerIdentifier(id, i),'license') then
+        if string.find(tostring(identifier),'license') then
 			license = identifier
 			break
 		end
@@ -92,7 +92,7 @@ for name,v in pairs(Config.Status) do
 		if value == nil then return end
 		local status = GlobalState.PlayerStates
 		local net = tonumber(bagName:gsub('player:', ''), 10)
-		if logout[net] then return end
+		if net and logout[net] or not net then return end
 		local ply = Player(net).state
 		if not status[ply.identifier] then status[ply.identifier] = {} end
 		status[ply.identifier][name] = value
