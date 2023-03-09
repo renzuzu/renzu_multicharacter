@@ -90,7 +90,7 @@ for name,v in pairs(Config.Status) do
 	AddStateBagChangeHandler(name, nil, function(bagName, _, value, _, _)
 		Wait(1500)
 		if value == nil then return end
-		local status = GlobalState.PlayerStates
+		local status = GlobalState.PlayerStates or {}
 		local net = tonumber(bagName:gsub('player:', ''), 10)
 		if net and logout[net] or not net then return end
 		local ply = Player(net).state
