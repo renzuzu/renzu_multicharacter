@@ -94,6 +94,7 @@ for name,v in pairs(Config.Status) do
 		local net = tonumber(bagName:gsub('player:', ''), 10)
 		if net and logout[net] or not net then return end
 		local ply = Player(net).state
+		if not ply.identifier then return end
 		if not status[ply.identifier] then status[ply.identifier] = {} end
 		status[ply.identifier][name] = value
 		SetResourceKvp('char_status',json.encode(status))
