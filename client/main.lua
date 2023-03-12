@@ -389,6 +389,12 @@ SkinMenu = function()
 				characters[chosenslot].skin = appearance
 				local save = callback('renzu_multicharacter:saveappearance', appearance)
 				finished = true
+			else -- if they cancel, so this will avoid player being invisible. because they dont have a skin and model saved in database.
+				local appearance = exports['fivem-appearance']:getPedAppearance(playerPed)
+				local save = callback('renzu_multicharacter:saveappearance', appearance)
+				finished = true
+				if not characters[chosenslot] then characters[chosenslot] = {} end
+				characters[chosenslot].skin = appearance
 			end
 		end, config)
 	elseif Config.skin == 'illeniumappearance' then
@@ -403,6 +409,12 @@ SkinMenu = function()
 				characters[chosenslot].skin = appearance
 				local save = callback('renzu_multicharacter:saveappearance', appearance)
 				finished = true
+			else -- if they cancel, so this will avoid player being invisible. because they dont have a skin and model saved in database.
+				local appearance = exports['illenium-appearance']:getPedAppearance(playerPed)
+				local save = callback('renzu_multicharacter:saveappearance', appearance)
+				finished = true
+				if not characters[chosenslot] then characters[chosenslot] = {} end
+				characters[chosenslot].skin = appearance
 			end
 		end, config)
 	elseif Config.skin == 'qb-clothing' then
