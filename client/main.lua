@@ -109,7 +109,7 @@ CreatePedHeadShots = function(characters)
 		if chardata and not pedshots[slot] then
 			local skin = chardata.skin
 			skin.sex = chardata.sex == "m" and 0 or 1
-			local model = models[skin.sex] or models[0]
+			local model = skin?.model or models[skin.sex] or models[0]
 			
 			SetModel(model)
 			SetEntityCoords(PlayerPedId(), 0.0,0.0,500.0)
@@ -265,7 +265,7 @@ ShowCharacter = function(slot)
 	if not IsCamActive(cam) then
 		SetCamActive(cam,true)
 	end
-	local model = GetModel(chardata.sex)
+	local model = GetModel(chardata.sex,chardata?.skin?.model)
 	SetModel(model)
 	SetLocalPlayerVisibleLocally(true)
 	Wait(1)
@@ -343,7 +343,7 @@ SetSkin = function(ped,skn)
 	end
 end
 
-GetModel = function(str)
+GetModel = function(str,othermodel)
 	if Config.skin == 'skinchanger' then
 		skin = Config.Default[Config.skin][str or 'm']
 		skin.sex = str == "m" and 0 or 1
@@ -351,11 +351,11 @@ GetModel = function(str)
 		return model
 	elseif Config.skin == 'fivemappearance' then
 		skin.sex = str == "m" and 0 or 1
-		local model = skin.sex == 0 and `mp_m_freemode_01` or `mp_f_freemode_01`
+		local model = othermodel or skin.sex == 0 and `mp_m_freemode_01` or `mp_f_freemode_01`
 		return model
 	elseif Config.skin == 'illeniumappearance' then
 		skin.sex = str == "m" and 0 or 1
-		local model = skin.sex == 0 and `mp_m_freemode_01` or `mp_f_freemode_01`
+		local model = othermodel or skin.sex == 0 and `mp_m_freemode_01` or `mp_f_freemode_01`
 		return model
 	elseif Config.skin == 'qb-clothing' then
 		local model = str == 'm' and `mp_m_freemode_01` or `mp_f_freemode_01`
