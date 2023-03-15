@@ -1,6 +1,6 @@
 -- Default appearance for new characters
 Config.Default = {
-	['illeniumappearance'] = {
+	['illenium-appearance'] = {
 		['m'] = {
 			tattoos = {
 			},
@@ -585,7 +585,7 @@ Config.Default = {
 
 
 	-- fivemappearance
-	['fivemappearance'] = {
+	['fivem-appearance'] = {
 		['m'] = {
 			props = {
 			[1] = {

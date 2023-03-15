@@ -7,18 +7,13 @@ Config.RegisterHook = {
 	call = 'esx_identity:showRegisterIdentity' -- sample esx_identity compatibility. for more compatibilty see bottom.
 }
 
--- Choose Skin Resource
--- if using qbcore use qb-clothing or fivemappearance. 
-Config.skin = 'illeniumappearance' -- skinchanger , fivemappearance, qb-clothing, illeniumappearance
--- skin resource
-
 -- SPAWN resource
 Config.SpawnSelector = true -- enable this if you want to use spawn selector
 Config.SpawnSelectorExport = function(coord) -- by default it uses my spawn resource
 	return exports.renzu_spawn:Selector({x = coord.x, y = coord.y, z = coord.z, heading = coord.w})
 end
 -- intro
-Config.bgmusic = true -- play bg music on intro character select
+Config.bgmusic = false -- play bg music on intro character select
 Config.IntroURL = 'https://www.youtube.com/watch?v=41cqwo504hA' -- bg music on intro
 Config.cam = true -- intro camera
 
@@ -120,6 +115,36 @@ for resource,v in pairs(Config.SkinMenus) do
 		end
 	end
 end
+
+-- Choose Skin Resource
+Config.skinsupport = {
+	['fivem-appearance'] = true,
+	['skinchanger'] = true,
+	['qb-clothing'] = true,
+	['illenium-appearance'] = true
+}
+Config.skin = 'none' -- do not replace this. this resource automatically detect your skin resourc if its supported.
+local skincount = {}
+local lowpriority = 'skinchanger' -- for people who started 2 skin resource :facepalm
+for skin,_ in pairs(Config.skinsupport) do
+	if GetResourceState(skin) == 'started' or GetResourceState(skin) == 'starting' then -- autodetect skin resource
+		Config.skin = skin
+		table.insert(skincount,skin)
+	end
+end
+if Config.skin == 'none' then
+	warn('YOU DONT HAVE ANY SUPPORTED SKIN RESOURCE')
+end
+if #skincount > 1 then
+	warn('you have multiple skin resource started. start only 1 supported skin resource. ex. fivem-appearance, skinchanger cannot be started at the same time!')
+	for k,skin in pairs(skincount) do
+		if lowpriority ~= skin then
+			Config.skin = skin
+		end
+	end
+	warn('USING '..Config.skin..' Anyway')
+end
+-- skin resource
 
 -- extra ui info ex. LocalPlayer.state:set('invehicle',true,true)
 -- take note this utilise state bag. so the state value should be sent by client or server manualy.
