@@ -1,6 +1,5 @@
 Config = {}
 Config.Locale = 'en'
-Config.framework = 'ESX' -- ESX or QBCORE
 Config.UseDefaultRegister = true -- if false you will use other registration resource ex. esx_identite,
 Config.RegisterHook = {
 	event = true,
@@ -104,18 +103,6 @@ Config.fivemappearanceConfig = {
 	ped = true, headBlend = true, faceFeatures = true, headOverlays = true, components = true, componentConfig = { masks = true, upperBody = true, lowerBody = true, bags = true, shoes = true, scarfAndChains = true, bodyArmor = true, shirts = true, decals = true, jackets = true }, props = true, propConfig = { hats = true, glasses = true, ear = true, watches = true, bracelets = true }, tattoos = true, enableExit = true,
 }
 
---- do not edit
-Config.SkinMenu = {}
-for resource,v in pairs(Config.SkinMenus) do
-	if resource == Config.skin then
-		for k,v in pairs(v) do
-			if v.use then
-				Config.SkinMenu[resource] = {event = v.event or false, exports = v.exports or false}
-			end
-		end
-	end
-end
-
 -- Choose Skin Resource
 Config.skinsupport = {
 	['fivem-appearance'] = true,
@@ -123,6 +110,7 @@ Config.skinsupport = {
 	['qb-clothing'] = true,
 	['illenium-appearance'] = true
 }
+
 Config.skin = 'none' -- do not replace this. this resource automatically detect your skin resourc if its supported.
 local skincount = {}
 local lowpriority = 'skinchanger' -- for people who started 2 skin resource :facepalm
@@ -144,8 +132,24 @@ if #skincount > 1 then
 	end
 	warn('USING '..Config.skin..' Anyway')
 end
+
+--- do not edit
+Config.SkinMenu = {}
+for resource,v in pairs(Config.SkinMenus) do
+	if resource == Config.skin then
+		for k,v in pairs(v) do
+			if v.use then
+				Config.SkinMenu[resource] = {event = v.event or false, exports = v.exports or false}
+			end
+		end
+	end
+end
+
 -- skin resource
 
+-- FRAMEWORK AUTO DETECT 2 supported framework
+Config.framework = GetResourceState('es_extended') ==  'started' and 'ESX' or GetResourceState('qb-core') ==  'started' and 'QBCORE'
+if not Config.framework then warn("NO FRAMEWORK DETECTED") end
 -- extra ui info ex. LocalPlayer.state:set('invehicle',true,true)
 -- take note this utilise state bag. so the state value should be sent by client or server manualy.
 Config.Status = {
