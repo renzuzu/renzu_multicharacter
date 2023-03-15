@@ -4,6 +4,7 @@ local models = {
 	[1] = `mp_f_freemode_01`
 }
 local defaultspawn = Config.Spawn
+local useSkinMenu = false
 local xSound = nil
 local slots = Config.Slots
 local states = {}
@@ -110,14 +111,11 @@ CreatePedHeadShots = function(characters)
 			local skin = chardata.skin
 			skin.sex = chardata.sex == "m" and 0 or 1
 			local model = skin?.model or models[skin.sex] or models[0]
-			
 			SetModel(model)
-			SetEntityCoords(PlayerPedId(), 0.0,0.0,500.0)
-			
+			SetEntityCoords(PlayerPedId(), defaultspawn.x,defaultspawn.y,defaultspawn.z)
 			SetSkin(PlayerPedId(), skin)
 			SetEntityVisible(PlayerPedId(),false)
 			FreezeEntityPosition(PlayerPedId(), true)
-			Wait(211)
 			local pedshot , handle = GetPedShot(PlayerPedId())
 			pedshots[slot] = pedshot
 			SendNUIMessage({pedshots = pedshot, slot = slot})
@@ -222,6 +220,17 @@ PlayAnim = function(ped,dict,anim)
 	TaskPlayAnim(ped,dict,anim,1.0,1.0,-1,0,0,0,0,0)
 end
 
+isSkinValid = function(skins)
+	local skin = Config.skin
+	if skin == 'skinchanger' then return true end -- only check other resource
+	for k,v in pairs(skins) do
+		if k == 'hair' then
+			return true
+		end
+	end
+	return false
+end
+
 ShowCharacter = function(slot)
 	chosenslot = slot
 	chosen = true
@@ -245,7 +254,6 @@ ShowCharacter = function(slot)
 		SetLocalPlayerVisibleLocally(true)
 		FreezeEntityPosition(PlayerPedId(),false)
 		Wait(10)
-		print(Config.skin,Config.Default[Config.skin])
 		SetSkin(PlayerPedId(),Config.Default[Config.skin]['m'])
 		characters[tonumber(slot)] = {position = {x = defaultspawn.x, y = defaultspawn.y+10, z = defaultspawn.z}, new = true}
 		SetBlockingOfNonTemporaryEvents(PlayerPedId(), true)
@@ -279,6 +287,13 @@ ShowCharacter = function(slot)
 	PointCamAtCoord(cam,chardata.position.x,chardata.position.y,GroundZ+0.9)
 	RenderScriptCams(true, true, 0, true, true)
 	SetSkin(PlayerPedId(), skin)
+	useSkinMenu = false
+	if not isSkinValid(skin) then
+		warn('this character does not have a saved skin.  this either using other skin resource')
+		SetSkin(PlayerPedId(),Config.Default[Config.skin]['m'])
+		warn('USING DEFAULT SKIN FOR '..Config.skin..' Anyway')
+		useSkinMenu = true
+	end
 	Wait(200)
 	TaskTurnPedToFaceCoord(PlayerPedId(),chardata.position.x,chardata.position.y+2,GroundZ+0.2,5000)
 	SetFocusEntity(PlayerPedId())
@@ -327,6 +342,10 @@ SpawnSelect = function(coord)
 		for k,v in pairs(state) do if not v.spawn and v.value and extras and extras[k] then return end end
 		local coord = coord
 		spawn = Config.SpawnSelectorExport(coord)
+	end
+	if useSkinMenu then
+		SkinMenu()
+		useSkinMenu = false
 	end
 end
 
