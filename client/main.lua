@@ -240,10 +240,12 @@ ShowCharacter = function(slot)
 		SendNUIMessage({showcharacter = {showoptions = 'new', slot = slot, customregister = not Config.UseDefaultRegister}})
 		local model = GetModel('m')
 		SetModel(model)
-		SetEntityCoords(PlayerPedId(),defaultspawn.x,defaultspawn.y,defaultspawn.z)
+		local _, GroundZ = GetGroundZFor_3dCoord(defaultspawn.x,defaultspawn.y,defaultspawn.z+1.0,false)
+		SetEntityCoords(PlayerPedId(),defaultspawn.x,defaultspawn.y,GroundZ)
 		SetLocalPlayerVisibleLocally(true)
 		FreezeEntityPosition(PlayerPedId(),false)
 		Wait(10)
+		print(Config.skin,Config.Default[Config.skin])
 		SetSkin(PlayerPedId(),Config.Default[Config.skin]['m'])
 		characters[tonumber(slot)] = {position = {x = defaultspawn.x, y = defaultspawn.y+10, z = defaultspawn.z}, new = true}
 		SetBlockingOfNonTemporaryEvents(PlayerPedId(), true)
@@ -270,16 +272,15 @@ ShowCharacter = function(slot)
 	SetLocalPlayerVisibleLocally(true)
 	Wait(1)
 	FreezeEntityPosition(PlayerPedId(),false)
-	SetEntityCoordsNoOffset(PlayerPedId(),chardata.position.x,chardata.position.y,chardata.position.z+0.1,true, false, false, false)
 	SetFocusPosAndVel(chardata.position.x+2,chardata.position.y+2,chardata.position.z+0.5)
-	SetCamParams(cam, chardata.position.x,chardata.position.y+2,chardata.position.z+0.2, 0.0,0.0,0.0, 75.0, 1, 0, 0, 2)
-	PointCamAtCoord(cam,chardata.position.x,chardata.position.y,chardata.position.z+0.1)
+	local _, GroundZ = GetGroundZFor_3dCoord(chardata.position.x,chardata.position.y,chardata.position.z+1.0,false)
+	SetEntityCoords(PlayerPedId(),chardata.position.x,chardata.position.y,GroundZ+0.1)
+	SetCamParams(cam, chardata.position.x,chardata.position.y+2,GroundZ+0.9, 0.0,0.0,0.0, 75.0, 1, 0, 0, 2)
+	PointCamAtCoord(cam,chardata.position.x,chardata.position.y,GroundZ+0.9)
 	RenderScriptCams(true, true, 0, true, true)
 	SetSkin(PlayerPedId(), skin)
-	--lastped = ClonePed(PlayerPedId(), false, false, true)
-	--SetEntityCoordsNoOffset(PlayerPedId(),chardata.position.x,chardata.position.y,chardata.position.z-0.7,true, false, false, false)
 	Wait(200)
-	TaskTurnPedToFaceCoord(PlayerPedId(),chardata.position.x,chardata.position.y+2,chardata.position.z+0.2,5000)
+	TaskTurnPedToFaceCoord(PlayerPedId(),chardata.position.x,chardata.position.y+2,GroundZ+0.2,5000)
 	SetFocusEntity(PlayerPedId())
 	Wait(500)
 	local gestures = Config.Animations['choose'][math.random(1,#Config.Animations['choose'])]
@@ -334,9 +335,9 @@ local skin = {}
 SetSkin = function(ped,skn)
 	if Config.skin == 'skinchanger' then
 		TriggerEvent('skinchanger:loadSkin', skn)
-	elseif Config.skin == 'fivemappearance' then
+	elseif Config.skin == 'fivem-appearance' then
 		exports['fivem-appearance']:setPedAppearance(PlayerPedId(), skn)
-	elseif Config.skin == 'illeniumappearance' then
+	elseif Config.skin == 'illenium-appearance' then
 		exports['illenium-appearance']:setPedAppearance(PlayerPedId(), skn)
 	elseif Config.skin == 'qb-clothing' then
 		TriggerEvent('qb-clothing:client:loadPlayerClothing', skn, PlayerPedId())
@@ -349,11 +350,11 @@ GetModel = function(str,othermodel)
 		skin.sex = str == "m" and 0 or 1
 		local model = skin.sex == 0 and `mp_m_freemode_01` or `mp_f_freemode_01`
 		return model
-	elseif Config.skin == 'fivemappearance' then
+	elseif Config.skin == 'fivem-appearance' then
 		skin.sex = str == "m" and 0 or 1
 		local model = othermodel or skin.sex == 0 and `mp_m_freemode_01` or `mp_f_freemode_01`
 		return model
-	elseif Config.skin == 'illeniumappearance' then
+	elseif Config.skin == 'illenium-appearance' then
 		skin.sex = str == "m" and 0 or 1
 		local model = othermodel or skin.sex == 0 and `mp_m_freemode_01` or `mp_f_freemode_01`
 		return model
@@ -377,7 +378,7 @@ SkinMenu = function()
 				Config.SkinMenu[Config.skin].exports()
 			end
 		end)
-	elseif Config.skin == 'fivemappearance' then
+	elseif Config.skin == 'fivem-appearance' then
 		local config = Config.fivemappearanceConfig
 		local playerPed = PlayerPedId()
 		SetPedAoBlobRendering(playerPed, true)
@@ -397,7 +398,7 @@ SkinMenu = function()
 				characters[chosenslot].skin = appearance
 			end
 		end, config)
-	elseif Config.skin == 'illeniumappearance' then
+	elseif Config.skin == 'illenium-appearance' then
 		local config = Config.fivemappearanceConfig
 		local playerPed = PlayerPedId()
 		SetPedAoBlobRendering(playerPed, true)
@@ -429,9 +430,9 @@ end
 LoadSkin = function()
 	if Config.skin == 'skinchanger' then
 		TriggerEvent('skinchanger:loadSkin', characters[chosenslot].skin)
-	elseif Config.skin == 'fivemappearance' then
+	elseif Config.skin == 'fivem-appearance' then
 		exports['fivem-appearance']:setPlayerAppearance(characters[chosenslot].skin)
-	elseif Config.skin == 'illeniumappearance' then
+	elseif Config.skin == 'illenium-appearance' then
 		exports['illenium-appearance']:setPlayerAppearance(characters[chosenslot].skin)
 	elseif Config.skin == 'qb-clothing' then
 		TriggerEvent('qb-clothing:client:loadPlayerClothing', characters[chosenslot].skin, PlayerPedId())
