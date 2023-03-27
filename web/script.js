@@ -3,7 +3,7 @@
  async function SendData(data,cb) {
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
-        if (xhr.readyState == XMLHttpRequest.DONE) {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
             if (cb) {
                 cb(xhr.responseText)
             }
@@ -35,14 +35,14 @@ window.addEventListener('message', function (table) {
         getEl('logocontainer').style.display = 'none'
         getEl('loading').style.display = 'block'
         getEl('body').style.background = 'rgba(0, 0, 0, 1.0)'
-    } else if (event.fade == false) {
+    } else if (event.fade === false) {
         getEl('loading').style.display = 'none'
         getEl('body').style.background = 'rgba(0, 0, 0, 0.0)'
     }
     if (event.pedshots) {
         if (event.default) {
             pedshots[event.slot] = '/web/ped.jpg'
-        } else if (pedshots[event.slot] == undefined || pedshots[event.slot] == '/web/ped.jpg') {
+        } else if (pedshots[event.slot] === undefined || pedshots[event.slot] === '/web/ped.jpg') {
             toDataURL(`https://nui-img/${event.pedshots}/${event.pedshots}?${Date.now()}`)
             .then(dataUrl => {
                 pedshots[event.slot] = dataUrl
@@ -61,22 +61,22 @@ window.addEventListener('message', function (table) {
         getEl('logocontainer').style.right = 'auto'
         getEl('register').style.display = 'none'
     }
-    if (event.delete == false) {
+    if (event.delete === false) {
         getEl('deletebutton').style.display = 'none'
         getEl('deletecancel').style.transform = 'translate(0, 50px)'
         getEl('confirm').style.textAlign = 'center'
         getEl('candelete').innerHTML = 'Player cannot delete characters. Contact administrator'
     }
-    if (event.show == true) {
+    if (event.show === true) {
         getEl('multi').style.display = 'grid'
-    } else if (event.show == false) {
+    } else if (event.show === false) {
         getEl('multi').style.display = 'none'
     }
 
-    if (event.showlogo == true) {   
+    if (event.showlogo === true) {   
         getEl('logocontainer').style.top = '20%'
         getEl('logocontainer').style.display = 'inline-block'
-    } else if (event.showlogo == false) {
+    } else if (event.showlogo === false) {
         getEl('logocontainer').style.display = 'inline-block'
         getEl('logocontainer').style.width = '45vh'
         getEl('logocontainer').style.right = '15%'
@@ -85,11 +85,11 @@ window.addEventListener('message', function (table) {
     if (event.data) {
         let chars = event.data?.characters || {}
         characters = chars
-        if (event.data.slots == undefined) { event.data.slots = 5 }
+        if (event.data.slots === undefined) { event.data.slots = 5 }
         for (var i = 0; i < event.data.slots; i++) {
             if (!chars[i]) {
                 chars[i] = {name : 'EMPTY SLOT'}
-            } else if (chars[i] && chars[i].name == undefined) {
+            } else if (chars[i] && chars[i].name === undefined) {
                 chars[i] = {name : 'EMPTY SLOT'}
             }
         }
@@ -117,7 +117,7 @@ window.addEventListener('message', function (table) {
         }
 
     }
-    if (event.showcharacter?.showoptions == 'existing') {
+    if (event.showcharacter?.showoptions === 'existing') {
         getEl('delete').style.display = 'inline-block'
         getEl('register').style.display = 'none'
         getEl('charinfo').style.display = 'unset'
@@ -126,7 +126,7 @@ window.addEventListener('message', function (table) {
         getEl('registercustom').style.display = 'none'
         chosenslot = event.showcharacter.slot
         ShowInfos()
-    } else if (event.showcharacter?.showoptions == 'new') {
+    } else if (event.showcharacter?.showoptions === 'new') {
         chosenslot = event.showcharacter.slot
         if (event.showcharacter.customregister) {
             getEl('delete').style.display = 'none'
@@ -134,7 +134,7 @@ window.addEventListener('message', function (table) {
             getEl('logocontainer').style.display = 'none'
             getEl('option').style.display = 'none'
             getEl('registercustom').style.display = 'block'
-        } else if (event.showcharacter.customregister == false) {
+        } else if (event.showcharacter.customregister === false) {
             getEl('register').style.display = 'flex'
             getEl('delete').style.display = 'none'
             getEl('charinfo').style.display = 'none'
@@ -150,25 +150,25 @@ function ShowInfos() {
     let infos = {}
     for (const i in characters[id]) {
         let data = characters[id][i]
-        if (i == 'name') {
+        if (i === 'name') {
             infos[0] = {label : '<i class="fas fa-id-card"></i> Name', data : data}
         }
-        if (i == 'job') {
+        if (i === 'job') {
             infos[1] = {label : '<i class="fas fa-briefcase"></i> Job', data : data}
         }
-        if (i == 'grade') {
+        if (i === 'grade') {
             infos[2] = {label : '<i class="fas fa-level-up-alt"></i> Grade', data : data}
         }
-        if (i == 'sex') {
+        if (i === 'sex') {
             infos[3] = {label : '<i class="fas fa-venus-mars"></i> Sex', data : data}
         }
-        if (i == 'money') {
+        if (i === 'money') {
             infos[4] = {label : '<i class="fas fa-wallet"></i> Money', data : numberWithCommas(data)}
         }
-        if (i == 'bank') {
+        if (i === 'bank') {
             infos[5] = {label : '<i class="fas fa-piggy-bank"></i> Bank', data : numberWithCommas(data)}
         }
-        if (i == 'dateofbirth') {
+        if (i === 'dateofbirth') {
             infos[6] = {label : '<i class="fas fa-calendar-week"></i> Date of Birth', data : data}
         }
     }
@@ -212,7 +212,7 @@ function register() {
     let data = Object.fromEntries(formData)
     let login = true
     for (const i in data) {
-        if(data[i] == '') {
+        if(data[i] === '') {
             login = false
             getEl(i).style.borderColor = 'red'
             getEl(i).style.borderStyle = 'outset'
