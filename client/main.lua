@@ -87,7 +87,7 @@ WeatherTransition = function()
 				end
 			end
 			Wait(0)
-			if not IsEntityPositionFrozen(PlayerPedId()) then FreezeEntityPosition(PlayerPedId(),true) end
+			if not chosen and not IsEntityPositionFrozen(PlayerPedId()) then FreezeEntityPosition(PlayerPedId(),true) end
 		end
 		SetWeatherTypeNowPersist('CLEAR') -- initial set weather
 		SetWeatherTypeTransition(`NEUTRAL`,`CLEAR`,0.7)
@@ -234,6 +234,7 @@ end
 ShowCharacter = function(slot)
 	chosenslot = slot
 	chosen = true
+	Wait(10)
 	local chardata = characters[tonumber(slot)]
 	if xSound then
 		if xSound:soundExists('intro') then
@@ -243,26 +244,21 @@ ShowCharacter = function(slot)
 	SetEntityVisible(PlayerPedId(), 1, 0)
 	SetPedAoBlobRendering(PlayerPedId(), true)
 	ResetEntityAlpha(PlayerPedId())
+	FreezeEntityPosition(PlayerPedId(),false)
 	if chardata and not chardata.new then
 		SendNUIMessage({showcharacter = {showoptions = 'existing', slot = slot}})
 	else
 		SendNUIMessage({showcharacter = {showoptions = 'new', slot = slot, customregister = not Config.UseDefaultRegister}})
 		local model = GetModel('m')
 		SetModel(model)
-		SetEntityCoords(PlayerPedId(),defaultspawn.x,defaultspawn.y,defaultspawn.z+0.5)
-		SetLocalPlayerVisibleLocally(true)
-		FreezeEntityPosition(PlayerPedId(),false)
-		Wait(10)
+		SetEntityCoordsNoOffset(PlayerPedId(),defaultspawn.x,defaultspawn.y,defaultspawn.z)
+		SetEntityHeading(PlayerPedId(),0.0)
 		SetSkin(PlayerPedId(),Config.Default[Config.skin]['m'])
 		characters[tonumber(slot)] = {position = {x = defaultspawn.x, y = defaultspawn.y+10, z = defaultspawn.z}, new = true}
 		SetBlockingOfNonTemporaryEvents(PlayerPedId(), true)
 		SetCamParams(cam, defaultspawn.x,defaultspawn.y+10,defaultspawn.z, 0.0,0.0,0.0, 20.0, 1, 0, 0, 2)
-		PointCamAtCoord(cam,defaultspawn.x,defaultspawn.y,defaultspawn.z)
-		--SetEntityCoords(PlayerPedId(),defaultspawn.x,defaultspawn.y+20,defaultspawn.z)
+		PointCamAtEntity(cam, PlayerPedId(), 0.0, 0.0, 0.0, true)
 		SetFocusPosAndVel(defaultspawn.x,defaultspawn.y+10,defaultspawn.z)
-		Wait(100)
-		TaskTurnPedToFaceCoord(PlayerPedId(),defaultspawn.x,defaultspawn.y+10,defaultspawn.z)
-		Wait(500)
 		local gestures = Config.Animations['choose'][math.random(1,#Config.Animations['choose'])]
 		PlayAnim(PlayerPedId(),gestures.dict,gestures.anim)
 		return
@@ -276,13 +272,11 @@ ShowCharacter = function(slot)
 	end
 	local model = GetModel(chardata.sex,chardata?.skin?.model)
 	SetModel(model)
-	SetLocalPlayerVisibleLocally(true)
-	Wait(1)
-	FreezeEntityPosition(PlayerPedId(),false)
+	SetEntityCoordsNoOffset(PlayerPedId(),chardata.position.x,chardata.position.y,chardata.position.z)
+	SetEntityHeading(PlayerPedId(),0.0)
 	SetFocusPosAndVel(chardata.position.x+2,chardata.position.y+2,chardata.position.z+0.5)
-	SetEntityCoords(PlayerPedId(),chardata.position.x,chardata.position.y,chardata.position.z+0.3)
 	SetCamParams(cam, chardata.position.x,chardata.position.y+2,chardata.position.z+0.3, 0.0,0.0,0.0, 75.0, 1, 0, 0, 2)
-	PointCamAtCoord(cam,chardata.position.x,chardata.position.y,chardata.position.z+0.3)
+	PointCamAtEntity(cam, PlayerPedId(), 0.0, 0.0, 0.0, true)
 	RenderScriptCams(true, true, 0, true, true)
 	SetSkin(PlayerPedId(), skin)
 	useSkinMenu = false
@@ -292,10 +286,7 @@ ShowCharacter = function(slot)
 		warn('USING DEFAULT SKIN FOR '..Config.skin..' Anyway')
 		useSkinMenu = true
 	end
-	Wait(200)
-	TaskTurnPedToFaceCoord(PlayerPedId(),chardata.position.x,chardata.position.y+2,chardata.position.z+0.3,5000)
 	SetFocusEntity(PlayerPedId())
-	Wait(500)
 	local gestures = Config.Animations['choose'][math.random(1,#Config.Animations['choose'])]
 	PlayAnim(PlayerPedId(),gestures.dict,gestures.anim)
 end
