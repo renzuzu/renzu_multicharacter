@@ -113,9 +113,13 @@ DeleteCharacter = function(source,slot)
 end
 
 LoadPlayer = function(source)
+	local source = source
 	while not GetPlayerFromId(source) do Wait(0) print('Loading Data for '..GetPlayerName(source)..'') end
 	local ply = Player(source).state
-	ply:set('identifier',GetPlayerFromId(source).identifier,true)
+	local identifier = GetPlayerFromId(source).identifier
+	if identifier then
+		ply:set('identifier',GetPlayerFromId(source).identifier,true)
+	end
 	return true
 end
 
@@ -136,6 +140,8 @@ Login = function(source,data,new,qbslot)
 		end
 		local login = QBCore.Player.Login(source, not new and data or false, new or nil)
 		print('^2[qb-core]^7 '..GetPlayerName(source)..' (Citizen ID: '..data..') has succesfully loaded!')
+		local ply = Player(source).state
+		ply:set('identifier',data,true)
         QBCore.Commands.Refresh(source)
 		-- this codes below should be in playerloaded event in server. but here we need this to trigger qb-spawn and to support apartment
 		--loadHouseData(source)

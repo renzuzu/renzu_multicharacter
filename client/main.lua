@@ -3,6 +3,7 @@ local models = {
 	[0] = `mp_m_freemode_01`, 
 	[1] = `mp_f_freemode_01`
 }
+local stateactive = false
 local defaultspawn = Config.Spawn
 local useSkinMenu = false
 local xSound = nil
@@ -288,7 +289,10 @@ ShowCharacter = function(slot)
 	end
 	SetFocusEntity(PlayerPedId())
 	local gestures = Config.Animations['choose'][math.random(1,#Config.Animations['choose'])]
-	PlayAnim(PlayerPedId(),gestures.dict,gestures.anim)
+	Wait(100)
+	if not CheckStates(true) then
+		PlayAnim(PlayerPedId(),gestures.dict,gestures.anim)
+	end
 end
 
 SetupPlayer = function()
@@ -315,6 +319,7 @@ SpawnSelect = function(coord)
 		local PlayerData = QBCore.Functions.GetPlayerData()
 		TriggerServerEvent('QBCore:Server:OnPlayerLoaded')
 		TriggerEvent('QBCore:Client:OnPlayerLoaded')
+		loaded = true
 		local insideMeta = PlayerData.metadata["inside"]
 		if insideMeta.house ~= nil then
             local houseId = insideMeta.house
@@ -328,7 +333,7 @@ SpawnSelect = function(coord)
 	if Config.SpawnSelector then
 		local state = states or {}
 		local extras = characters[chosenslot] and characters[chosenslot].extras
-		for k,v in pairs(state) do if not v.spawn and v.value and extras and extras[k] then return end end
+		if stateactive then return end
 		local coord = coord
 		spawn = Config.SpawnSelectorExport(coord)
 	end
@@ -336,6 +341,9 @@ SpawnSelect = function(coord)
 		SkinMenu()
 		useSkinMenu = false
 	end
+
+	Wait(2000)
+	stateactive = false
 end
 
 local skin = {}
@@ -489,6 +497,7 @@ RegisterNetEvent('esx:playerLoaded', function(playerData, isNew, skin)
 	TriggerEvent('esx:restoreLoadout')
 	FreezeEntityPosition(PlayerPedId(),false)
 	ClearPedTasks(PlayerPedId())
+	stateactive = false
 end)
 
 RegisterNetEvent('esx:onPlayerLogout', function()
@@ -594,13 +603,15 @@ ClearPedHeadshots = function(handle)
 	UnregisterPedheadshot(handle)
 end
 
-CheckStates = function()
+CheckStates = function(preview)
 	local states = characters[chosenslot].extras
 	if characters[chosenslot] and characters[chosenslot].extras then
 		for name,data in pairs(states) do
-			HandleStates(name,data)
+			HandleStates(name,data,preview)
+			if preview and name == 'invehicle' then return true end
 		end
 	end
+	return false
 end
 
 RegisterStates = function(name,cb,spawnselector)
@@ -616,7 +627,7 @@ end
 exports('RegisterStates', RegisterStates)
 
 -- advanced usage
-HandleStates = function(name,data)
+HandleStates = function(name,data,preview)
 	-- this is where callbacks will handle
 	-- if data.server and name == 'inhouse' then
 	-- TriggerServerEvent('resource_sample:ishouse')
@@ -626,18 +637,37 @@ HandleStates = function(name,data)
 	-- my use case and example
 	if name == 'invehicle' and data and type(data) == 'table' then
 		DoScreenFadeOut(0)
-		local lastvehicle = callback('setplayertolastvehicle',data.net) -- this will set the player to its last vehicle
+		local lastvehicle = callback('setplayertolastvehicle',data.net,preview) -- this will set the player to its last vehicle
 		Wait(1000)
 		DoScreenFadeIn(1000)
+		if IsCamActive(cam) then
+			local vehicle = NetworkGetEntityFromNetworkId(data.net)
+			local coord = GetEntityCoords(vehicle)
+			SetCamParams(cam, coord.x,coord.y+4,coord.z+0.8, 0.0,0.0,0.0, 55.0, 1, 0, 0, 2)
+			PointCamAtEntity(cam, vehicle, 0.0, 0.0, 0.0, true)
+			stateactive = true -- prevents spawn selector
+		end
+		return data
 	end
 end
 
+function TryOxLib(file)
+    local fcall = function()
+        local name = ('%s.lua'):format(file)
+        local content = LoadResourceFile('ox_lib',name)
+        local f, err = load(content)
+        return f()
+    end
+    _, ret = pcall(fcall,false)
+    return ret
+end
+
 -- sample register states
--- exports.renzu_multicharacter:RegisterStates('invehicle', function()
--- 	if not lib then return end -- ox_lib
--- 	print('registered')
--- 	lib.onCache('vehicle', function(value)
--- 		print(value)
--- 		LocalPlayer.state:set('invehicle',value and {net = NetworkGetNetworkIdFromEntity(value) or false},true)
--- 	end)
--- end,false)
+TryOxLib('init')
+exports.renzu_multicharacter:RegisterStates('invehicle', function()
+	if not lib then return end -- ox_lib
+	lib.onCache('vehicle', function(value)
+		if not loaded then return end
+		LocalPlayer.state:set('invehicle',value and {net = NetworkGetNetworkIdFromEntity(value) or false},true)
+	end)
+end,false)

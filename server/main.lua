@@ -102,16 +102,27 @@ for name,v in pairs(Config.Status) do
 	end)
 end
 
-registercallback('setplayertolastvehicle', function(source,net)
+registercallback('setplayertolastvehicle', function(source,net,preview)
 	local vehicle = NetworkGetEntityFromNetworkId(net)
 	if DoesEntityExist(vehicle) then
+		local ped = GetPlayerPed(source)
+		SetPlayerRoutingBucket(source,0)
 		for i = 0-1, 7 do
-			if GetPedInVehicleSeat(vehicle,i) == 0 then
-				SetPedIntoVehicle(GetPlayerPed(source),vehicle,i)
-				return true
+			local pedinseat = GetPedInVehicleSeat(vehicle,i)
+			if GetPedInVehicleSeat(vehicle,i) == ped then
+				SetPedIntoVehicle(ped,vehicle,i)
+				break
+			end
+			if pedinseat == 0 then
+				while GetPedInVehicleSeat(vehicle,i) ~= ped do
+					SetPedIntoVehicle(ped,vehicle,i)
+					Wait(111)
+				end
+				break
 			end
 		end
 	end
+	if preview then return end
 	local ply = Player(source).state
 	ply:set('invehicle',false,true) -- remove state if vehicle is not exist anymore
 	return false
