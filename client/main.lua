@@ -344,6 +344,7 @@ SpawnSelect = function(coord)
 
 	Wait(2000)
 	stateactive = false
+	DoScreenFadeIn(1000)
 end
 
 local skin = {}
