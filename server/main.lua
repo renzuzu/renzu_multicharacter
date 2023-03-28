@@ -106,6 +106,8 @@ registercallback('setplayertolastvehicle', function(source,net,preview)
 	local vehicle = NetworkGetEntityFromNetworkId(net)
 	if DoesEntityExist(vehicle) then
 		local ped = GetPlayerPed(source)
+		local coord = GetEntityCoords(vehicle)
+		SetEntityCoords(ped,coord.x,coord.y,coord.z)
 		SetPlayerRoutingBucket(source,0)
 		for i = 0-1, 7 do
 			local pedinseat = GetPedInVehicleSeat(vehicle,i)
