@@ -642,6 +642,7 @@ HandleStates = function(name,data,preview)
 		DoScreenFadeIn(1000)
 		if IsCamActive(cam) then
 			local vehicle = NetworkGetEntityFromNetworkId(data.net)
+			if not DoesEntityExist(vehicle) then return end
 			local coord = GetEntityCoords(vehicle)
 			SetCamParams(cam, coord.x,coord.y+4,coord.z+0.8, 0.0,0.0,0.0, 55.0, 1, 0, 0, 2)
 			PointCamAtEntity(cam, vehicle, 0.0, 0.0, 0.0, true)
