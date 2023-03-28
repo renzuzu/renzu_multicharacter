@@ -114,7 +114,7 @@ end
 
 LoadPlayer = function(source)
 	local source = source
-	while not GetPlayerFromId(source) do Wait(0) print('Loading Data for '..GetPlayerName(source)..'') end
+	while not GetPlayerFromId(source) do Wait(0) end
 	local ply = Player(source).state
 	local identifier = GetPlayerFromId(source).identifier
 	if identifier then
@@ -124,6 +124,7 @@ LoadPlayer = function(source)
 end
 
 Login = function(source,data,new,qbslot)
+	local source = source
 	if Config.framework == 'ESX' then
 		TriggerEvent('esx:onPlayerJoined', source, Config.Prefix..data, new or nil)
 		LoadPlayer(source)
