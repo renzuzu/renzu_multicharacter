@@ -114,7 +114,8 @@ end
 
 LoadPlayer = function(source)
 	local source = source
-	while not GetPlayerFromId(source) do Wait(0) end
+	local ts = 0
+	while not GetPlayerFromId(source) and ts < 1000 do ts += 1 Wait(0) end
 	local ply = Player(source).state
 	local identifier = GetPlayerFromId(source).identifier
 	if identifier then
