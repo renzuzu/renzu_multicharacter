@@ -98,6 +98,7 @@ end
 local pedshots = {}
 
 SetModel = function(model)
+	local model = tonumber(model)
 	RequestModel(model)
 	while not HasModelLoaded(model) do Wait(0) end
 	SetPlayerModel(PlayerId(), model)
@@ -376,7 +377,7 @@ GetModel = function(str,othermodel)
 		local model = othermodel or skin.sex == 0 and `mp_m_freemode_01` or `mp_f_freemode_01`
 		return model
 	elseif Config.skin == 'qb-clothing' then
-		local model = str == 'm' and `mp_m_freemode_01` or `mp_f_freemode_01`
+		local model = othermodel or str == 'm' and `mp_m_freemode_01` or `mp_f_freemode_01`
 		return model
 	end
 end

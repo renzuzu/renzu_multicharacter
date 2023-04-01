@@ -66,6 +66,8 @@ GetCharacters = function(source,data,slots)
 				local job = json.decode(result[i].job)
 				local firstname = info.firstname or 'No name'
 				local lastname = info.lastname or 'No Lastname'
+				local playerskin = skin and skin[1] and json.decode(skin[1].skin) or {}
+				playerskin.model = skin and skin[1] and skin[1].model
 				characters[result[i].cid] = {
 					slot = result[i].cid,
 					name = firstname..' '..lastname,
@@ -76,7 +78,7 @@ GetCharacters = function(source,data,slots)
 					money = money.cash,
 					citizenid = result[i].citizenid,
 					identifier = result[i].citizenid,
-					skin = skin and skin[1] and json.decode(skin[1].skin) or {},
+					skin = playerskin,
 					sex = info.gender == 0 and 'm' or 'f',
 					position = result[i].position and result[i].position ~= '' and json.decode(result[i].position) or vec3(280.03,-584.29,43.29),
 					extras = GetExtras(result[i].citizenid)
