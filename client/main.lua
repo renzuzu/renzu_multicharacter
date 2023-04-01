@@ -98,7 +98,6 @@ end
 local pedshots = {}
 
 SetModel = function(model)
-	local model = tonumber(model)
 	RequestModel(model)
 	while not HasModelLoaded(model) do Wait(0) end
 	SetPlayerModel(PlayerId(), model)
