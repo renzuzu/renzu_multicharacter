@@ -8,6 +8,7 @@ Config.RegisterHook = {
 
 -- SPAWN resource
 Config.SpawnSelector = true -- enable this if you want to use spawn selector
+Config.SpawnSelectInNewOnly = false -- set this to true if you want to use SpawnSelector on new players only
 Config.SpawnSelectorExport = function(coord) -- by default it uses my spawn resource
 	return exports.renzu_spawn:Selector({x = coord.x, y = coord.y, z = coord.z, heading = coord.w})
 end

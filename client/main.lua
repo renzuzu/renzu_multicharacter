@@ -10,6 +10,7 @@ local xSound = nil
 local slots = Config.Slots
 local states = {}
 local logout = false
+local New = false
 xsound = function()
 	o = function()
 		sound = exports.xSound
@@ -262,8 +263,10 @@ ShowCharacter = function(slot)
 		SetFocusPosAndVel(defaultspawn.x,defaultspawn.y+10,defaultspawn.z)
 		local gestures = Config.Animations['choose'][math.random(1,#Config.Animations['choose'])]
 		PlayAnim(PlayerPedId(),gestures.dict,gestures.anim)
+		New = true
 		return
 	end
+	New = false
 	local skin = chardata.skin
 	if string.find(tostring(chardata.sex):lower(), 'mal') then chardata.sex ='m' elseif string.find(tostring(chardata.sex):lower(),'fem') then chardata.sex = 'f' end -- supports other identity logic
 	skin.sex = chardata.sex == "m" and 0 or 1
@@ -330,11 +333,12 @@ SpawnSelect = function(coord)
             TriggerEvent('qb-apartments:client:LastLocationHouse', apartmentType, apartmentId)
         end
 	end
-	if Config.SpawnSelector then
+	if Config.SpawnSelector and not Config.SpawnSelectInNewOnly or Config.SpawnSelector and Config.SpawnSelectInNewOnly and New then
 		local state = states or {}
 		local extras = characters[chosenslot] and characters[chosenslot].extras
 		if stateactive then return end
 		local coord = coord
+		New = false
 		spawn = Config.SpawnSelectorExport(coord)
 	end
 	if useSkinMenu then
